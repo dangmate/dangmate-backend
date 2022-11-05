@@ -1,4 +1,4 @@
-package com.example.mungmatebackend.config;
+package com.example.mungmatebackend.global.config;
 
 import java.util.Arrays;
 import org.springframework.context.annotation.Bean;

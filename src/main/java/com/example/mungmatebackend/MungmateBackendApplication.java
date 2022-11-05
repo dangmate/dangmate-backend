@@ -9,9 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication()
-//@EnableJpaRepositories("com.example.mungmatebackend.domain.user.repository")
 public class MungmateBackendApplication {
-
 	public static void main(String[] args) {
 		System.setProperty("spring.profiles.default", "local");
 		SpringApplication.run(MungmateBackendApplication.class, args);

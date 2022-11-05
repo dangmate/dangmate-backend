@@ -4,23 +4,3 @@ springdoc:
     display-request-duration: true
   cache:
     disabled: true
-
----
-
-spring:
-  profiles:
-    active:local
-
----
-
-spring:
-  profiles:
-    active:dev
-
----
-
-spring:
-  profiles:
-    active:prod
-
----

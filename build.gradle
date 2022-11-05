@@ -43,6 +43,8 @@ task copyPrivate(type: Copy) {
 	}
 }
 
+sourceSets {}
+
 jar {
 	enabled = false
 }
