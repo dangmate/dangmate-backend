@@ -1,4 +1,4 @@
-package com.example.mungmatebackend.api.user.dto.request;
+package com.example.mungmatebackend.api.user.login.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserReq {
+public class UserLoginReq {
   @NotBlank(message = "해당 값은 필수 입력 값입니다.")
   @Schema(example = "abcd@gmail.com")
   private String email;

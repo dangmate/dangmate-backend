@@ -1,7 +1,7 @@
-package com.example.mungmatebackend.api.user.controller;
+package com.example.mungmatebackend.api.user.login.controller;
 
-import com.example.mungmatebackend.api.user.dto.request.UserReq;
-import com.example.mungmatebackend.api.user.dto.response.UserRes;
+import com.example.mungmatebackend.api.user.login.dto.request.UserLoginReq;
+import com.example.mungmatebackend.api.user.login.dto.response.UserLoginRes;
 import com.example.mungmatebackend.domain.user.service.UserService;
 import com.example.mungmatebackend.global.config.error.dto.ErrorRes;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,8 +19,8 @@ import javax.validation.Valid;
 @Tag(name = "User", description = "유저 API")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/user")
-public class UserController {
+@RequestMapping("/api/user/login")
+public class UserLoginController {
 
   private final UserService userService;
 
@@ -29,7 +29,7 @@ public class UserController {
           @ApiResponse(
                   responseCode = "200",
                   description = "로그인 성공",
-                  content = @Content(schema = @Schema(implementation = UserRes.class))
+                  content = @Content(schema = @Schema(implementation = UserLoginRes.class))
           ),
           @ApiResponse(
                   responseCode = "404",
@@ -42,8 +42,8 @@ public class UserController {
                   content = @Content(schema = @Schema(implementation = ErrorRes.class))
           )
   })
-  @PostMapping("/login")
-  public ResponseEntity<UserRes> postUser(@Valid @RequestBody UserReq user) {
+  @PostMapping("")
+  public ResponseEntity<UserLoginRes> postUser(@Valid @RequestBody UserLoginReq user) {
     return ResponseEntity.ok(userService.login(user));
   }
 }

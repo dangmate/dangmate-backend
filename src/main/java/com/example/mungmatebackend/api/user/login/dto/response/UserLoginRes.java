@@ -1,4 +1,4 @@
-package com.example.mungmatebackend.api.user.dto.response;
+package com.example.mungmatebackend.api.user.login.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserRes {
+public class UserLoginRes {
 
   @Schema(example = "200")
   private String statusCode;
