@@ -1,4 +1,4 @@
-package com.example.mungmatebackend.global.config.error.dto;
+package com.example.mungmatebackend.global.error.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

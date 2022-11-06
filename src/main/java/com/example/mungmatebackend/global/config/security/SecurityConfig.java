@@ -1,4 +1,4 @@
-package com.example.mungmatebackend.global.config;
+package com.example.mungmatebackend.global.config.security;
 
 import java.util.Arrays;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package com.example.mungmatebackend.global.config.error;
+package com.example.mungmatebackend.global.error;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

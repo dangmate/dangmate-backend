@@ -1,4 +1,4 @@
-package com.example.mungmatebackend.global.config.error.exception;
+package com.example.mungmatebackend.global.error.exception;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,7 +1,7 @@
-package com.example.mungmatebackend.global.config.error;
+package com.example.mungmatebackend.global.error;
 
-import com.example.mungmatebackend.global.config.error.exception.BusinessException;
-import com.example.mungmatebackend.global.config.error.exception.ErrorResponse;
+import com.example.mungmatebackend.global.error.exception.BusinessException;
+import com.example.mungmatebackend.global.error.exception.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

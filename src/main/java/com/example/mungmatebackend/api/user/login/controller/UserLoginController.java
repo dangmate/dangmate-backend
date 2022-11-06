@@ -3,7 +3,7 @@ package com.example.mungmatebackend.api.user.login.controller;
 import com.example.mungmatebackend.api.user.login.dto.request.UserLoginReq;
 import com.example.mungmatebackend.api.user.login.dto.response.UserLoginRes;
 import com.example.mungmatebackend.domain.user.service.UserService;
-import com.example.mungmatebackend.global.config.error.dto.ErrorRes;
+import com.example.mungmatebackend.global.error.dto.ErrorRes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

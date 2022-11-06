@@ -7,7 +7,7 @@ import com.example.mungmatebackend.api.user.signin.dto.response.UserEmailRes;
 import com.example.mungmatebackend.api.user.signin.dto.response.UserFullNameRes;
 import com.example.mungmatebackend.api.user.signin.dto.response.UserSigninRes;
 import com.example.mungmatebackend.domain.user.service.UserService;
-import com.example.mungmatebackend.global.config.error.dto.ErrorRes;
+import com.example.mungmatebackend.global.error.dto.ErrorRes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
