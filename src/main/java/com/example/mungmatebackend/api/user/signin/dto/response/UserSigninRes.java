@@ -19,4 +19,7 @@ public class UserSigninRes {
 
     @Schema(example = "귀여운 댕댕이")
     private String fullName;
+
+    @Schema(example = "공덕동")
+    private String location;
 }

@@ -26,4 +26,8 @@ public class UserSigninReq {
     @Schema(example = "귀여운 댕댕이")
     private String fullName;
 
+    @NotBlank(message = "해당 값은 필수 입력 값 입니다.")
+    @Schema(example = "공덕동")
+    private String location;
+
 }

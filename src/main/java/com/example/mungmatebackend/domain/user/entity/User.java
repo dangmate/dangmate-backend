@@ -25,4 +25,8 @@ public class User extends BaseEntity {
 
   @Column(length = 200, unique = true)
   private String fullName;
+
+  @Column(length = 20, nullable = false)
+  private String location;
+
 }
