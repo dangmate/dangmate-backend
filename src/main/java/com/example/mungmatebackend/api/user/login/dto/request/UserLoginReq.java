@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Data
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class UserLoginReq {
   @NotBlank(message = "해당 값은 필수 입력 값입니다.")
+  @Email(message = "이메일 형식이 올바르지 않습니다.")
   @Schema(example = "abcd@gmail.com")
   private String email;
   @NotBlank(message = "해당 값은 필수 입력 값입니다.")
