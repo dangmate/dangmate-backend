@@ -47,6 +47,9 @@ public class UserService {
 
     User newUser = User.builder()
             .email(userSigninReq.getEmail())
+            .password(passwordEncoder.encode(userSigninReq.getPassword()))
+            .fullName(userSigninReq.getFullName())
+            .location(userSigninReq.getLocation())
             .build();
 
     userRepository.save(newUser);
@@ -55,6 +58,7 @@ public class UserService {
             .statusCode("200")
             .email(userSigninReq.getEmail())
             .fullName(userSigninReq.getFullName())
+            .location(userSigninReq.getLocation())
             .build();
   }
 
