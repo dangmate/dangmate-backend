@@ -17,6 +17,6 @@ public class UserLoginReq {
   @Schema(example = "abcd@gmail.com")
   private String email;
   @NotBlank(message = "해당 값은 필수 입력 값입니다.")
-  @Schema(example = "1234")
+  @Schema(example = "123456")
   private String password;
 }

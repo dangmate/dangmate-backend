@@ -19,7 +19,7 @@ public class UserSigninReq {
     private String email;
 
     @NotBlank(message = "해당 값은 필수 입력 값 입니다.")
-    @Schema(example = "1234")
+    @Schema(example = "123456")
     private String password;
 
     @NotBlank(message = "해당 값은 필수 입력 값 입니다.")
