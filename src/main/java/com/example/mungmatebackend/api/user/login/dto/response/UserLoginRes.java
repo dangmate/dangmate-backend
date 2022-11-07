@@ -14,9 +14,14 @@ public class UserLoginRes {
 
   @Schema(example = "200")
   private String statusCode;
+
   @Schema(example = "abcd@gmail.com")
   private String email;
+
   @Schema(example = "귀여운 댕댕이")
   private String fullName;
+
+  @Schema(example = "공덕동")
+  private String location;
 
 }

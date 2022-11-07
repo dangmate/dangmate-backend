@@ -40,6 +40,7 @@ public class UserService {
         .statusCode("200")
         .email(user.get().getEmail())
         .fullName(user.get().getFullName())
+        .location(user.get().getLocation())
         .build();
   }
 
