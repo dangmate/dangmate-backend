@@ -10,6 +10,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication()
 public class MungmateBackendApplication {
+	static {
+		System.setProperty("com.amazonaws.sdk.disableEc2Metadata", "true");
+	}
 	public static void main(String[] args) {
 		System.setProperty("spring.profiles.default", "local");
 		SpringApplication.run(MungmateBackendApplication.class, args);
