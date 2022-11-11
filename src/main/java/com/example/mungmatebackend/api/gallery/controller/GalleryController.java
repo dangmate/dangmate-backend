@@ -4,11 +4,16 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.example.mungmatebackend.api.gallery.dto.response.GalleryRes;
+import com.example.mungmatebackend.api.gallery.dto.GalleryDto;
 import com.example.mungmatebackend.global.error.ErrorCode;
 import com.example.mungmatebackend.global.error.exception.BusinessException;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Random;
+
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/test")
+@RequestMapping("/api/gallery")
 public class GalleryController {
 
   private final AmazonS3Client amazonS3Client;
@@ -25,19 +30,17 @@ public class GalleryController {
   private String S3Bucket = "mungmate-bucket";
 
   @PostMapping("")
-  public ResponseEntity<GalleryRes> upload(MultipartFile multipartFile) {
-
-    String originalName = multipartFile.getOriginalFilename(); // 파일 이름
-    long size = multipartFile.getSize(); // 파일 크기
+  public ResponseEntity<GalleryDto.response> upload(MultipartFile multipartFile) {
+    String randomGeneratedString = RandomStringUtils.randomAlphanumeric(10);
+    long size = multipartFile.getSize();
 
     ObjectMetadata objectMetaData = new ObjectMetadata();
     objectMetaData.setContentType(multipartFile.getContentType());
     objectMetaData.setContentLength(size);
 
-    // S3에 업로드
     try {
       amazonS3Client.putObject(
-          new PutObjectRequest(S3Bucket, originalName, multipartFile.getInputStream(),
+          new PutObjectRequest(S3Bucket, randomGeneratedString, multipartFile.getInputStream(),
               objectMetaData)
               .withCannedAcl(CannedAccessControlList.PublicRead)
       );
@@ -45,9 +48,9 @@ public class GalleryController {
       throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXIST);
     }
 
-    String imagePath = amazonS3Client.getUrl(S3Bucket, originalName).toString(); // 접근가능한 URL 가져오기
+    String imagePath = amazonS3Client.getUrl(S3Bucket, randomGeneratedString).toString();
 
-    return ResponseEntity.ok(GalleryRes.builder().imagePath(imagePath).build());
+    return ResponseEntity.ok(GalleryDto.response.builder().imagePath(imagePath).build());
   }
 
 }
