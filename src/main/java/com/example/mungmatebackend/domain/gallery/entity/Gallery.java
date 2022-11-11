@@ -14,8 +14,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 @Builder
 public class Gallery extends BaseEntity {
 
@@ -31,6 +35,7 @@ public class Gallery extends BaseEntity {
   private String url;
 
   @OneToMany(mappedBy = "gallery")
+  @Builder.Default
   private List<GalleryPost> galleryPosts = new ArrayList<>();
 
 }

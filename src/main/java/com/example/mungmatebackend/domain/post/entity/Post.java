@@ -18,9 +18,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
+@Getter
+@Setter
 @Builder
 public class Post extends BaseEntity {
 
@@ -50,9 +54,11 @@ public class Post extends BaseEntity {
   private Integer views;
 
   @OneToMany(mappedBy = "post")
+  @Builder.Default
   private List<LikeUser> likeUsers = new ArrayList<>();
 
   @OneToMany(mappedBy = "post")
+  @Builder.Default
   private List<GalleryPost> galleryPosts = new ArrayList<>();
 
 }

@@ -9,13 +9,17 @@ import com.example.mungmatebackend.domain.common.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class User extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,5 +39,6 @@ public class User extends BaseEntity {
   private String profile;
 
   @OneToMany(mappedBy = "user")
+  @Builder.Default
   private List<LikeUser> likeUsers = new ArrayList<>();
 }
