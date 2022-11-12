@@ -2,6 +2,7 @@ package com.example.mungmatebackend.domain.post.service;
 
 import com.example.mungmatebackend.api.post.dto.PostDto;
 import com.example.mungmatebackend.api.posts.dto.PostsDto;
+import com.example.mungmatebackend.domain.common.CreatedAt;
 import com.example.mungmatebackend.domain.likeUser.entity.LikeUser;
 import com.example.mungmatebackend.domain.likeUser.repository.LikeUserRepository;
 import com.example.mungmatebackend.domain.post.entity.Post;
@@ -24,7 +25,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class PostService {
+public class PostService extends CreatedAt {
 
   private final PostRepository postRepository;
   private final UserRepository userRepository;
@@ -103,28 +104,28 @@ public class PostService {
 
     Optional<User> user = userRepository.findById(userId);
 
-    String createdAt = "";
-    LocalDateTime currentTime = LocalDateTime.now();
-    LocalDateTime savedTime = post.get().getCreatedAt();
-
-    if (ChronoUnit.YEARS.between(savedTime, currentTime) >= 1) {
-      int year = (int) ChronoUnit.YEARS.between(savedTime, currentTime);
-      createdAt = year + "년 전";
-    }else if(ChronoUnit.MONTHS.between(savedTime, currentTime) >= 1){
-      int month = (int) ChronoUnit.MONTHS.between(savedTime, currentTime);
-      createdAt = month + "달 전";
-    }else if(ChronoUnit.DAYS.between(savedTime, currentTime) >= 1){
-      int day = (int) ChronoUnit.DAYS.between(savedTime, currentTime);
-      createdAt = day + "일 전";
-    }else if(ChronoUnit.HOURS.between(savedTime, currentTime) >= 1){
-      int hour = (int) ChronoUnit.HOURS.between(savedTime, currentTime);
-      createdAt = hour + "시간 전";
-    }else if(ChronoUnit.MINUTES.between(savedTime, currentTime) >= 1){
-      int minute = (int) ChronoUnit.MINUTES.between(savedTime, currentTime);
-      createdAt = minute + "분 전";
-    }else{
-      createdAt = "방금 전";
-    }
+    String createdAt = getCreatedAt(post.get().getCreatedAt());
+//    LocalDateTime currentTime = LocalDateTime.now();
+//    LocalDateTime savedTime = post.get().getCreatedAt();
+//
+//    if (ChronoUnit.YEARS.between(savedTime, currentTime) >= 1) {
+//      int year = (int) ChronoUnit.YEARS.between(savedTime, currentTime);
+//      createdAt = year + "년 전";
+//    }else if(ChronoUnit.MONTHS.between(savedTime, currentTime) >= 1){
+//      int month = (int) ChronoUnit.MONTHS.between(savedTime, currentTime);
+//      createdAt = month + "달 전";
+//    }else if(ChronoUnit.DAYS.between(savedTime, currentTime) >= 1){
+//      int day = (int) ChronoUnit.DAYS.between(savedTime, currentTime);
+//      createdAt = day + "일 전";
+//    }else if(ChronoUnit.HOURS.between(savedTime, currentTime) >= 1){
+//      int hour = (int) ChronoUnit.HOURS.between(savedTime, currentTime);
+//      createdAt = hour + "시간 전";
+//    }else if(ChronoUnit.MINUTES.between(savedTime, currentTime) >= 1){
+//      int minute = (int) ChronoUnit.MINUTES.between(savedTime, currentTime);
+//      createdAt = minute + "분 전";
+//    }else{
+//      createdAt = "방금 전";
+//    }
 
     boolean isLike = false;
     Optional<LikeUser> likeUser = likeUserRepository.findByPostIdAndUserId(post.get().getId(), user.get().getId());

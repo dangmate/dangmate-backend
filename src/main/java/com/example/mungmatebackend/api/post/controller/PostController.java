@@ -5,6 +5,7 @@ import com.example.mungmatebackend.api.post.dto.PostDto;
 import com.example.mungmatebackend.domain.post.service.PostService;
 import com.example.mungmatebackend.global.error.dto.ErrorRes;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -65,7 +66,10 @@ public class PostController {
       )
   })
   @GetMapping("/{postId}/user/{userId}")
-  public ResponseEntity<PostDto.PostGetResponse> getPost(@PathVariable Long postId,
+  public ResponseEntity<PostDto.PostGetResponse> getPost(
+      @Parameter(name = "postId", description = "게시글 id")
+      @PathVariable Long postId,
+      @Parameter(name = "userId", description = "유저 id")
       @PathVariable Long userId) {
     return ResponseEntity.ok(postService.getPost(postId, userId));
   }

@@ -25,7 +25,7 @@ public class LikeController {
 
   private final LikeUserService likeUserService;
 
-  @Operation(summary = "좋아요 API")
+  @Operation(summary = "게시글 좋아요 API")
   @ApiResponses(value = {
       @ApiResponse(
           responseCode = "200",
@@ -48,7 +48,7 @@ public class LikeController {
     return ResponseEntity.ok(likeUserService.like(request));
   }
 
-  @Operation(summary = "좋아요 취소 API")
+  @Operation(summary = "게시글 좋아요 취소 API")
   @ApiResponses(value = {
       @ApiResponse(
           responseCode = "200",
