@@ -1,8 +1,8 @@
 package com.example.mungmatebackend.api.post.controller;
 
 import com.example.mungmatebackend.api.post.dto.LikeDto;
-import com.example.mungmatebackend.api.post.dto.PostDto;
-import com.example.mungmatebackend.domain.post.service.PostService;
+import com.example.mungmatebackend.api.post.dto.LikeDto.LikeResponseDto;
+import com.example.mungmatebackend.domain.likeUser.service.LikeUserService;
 import com.example.mungmatebackend.global.error.dto.ErrorRes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,8 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,16 +21,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/post")
 @RequiredArgsConstructor
 @Tag(name = "Post", description = "각 게시글 API")
-public class PostController {
+public class LikeController {
 
-  private final PostService postService;
+  private final LikeUserService likeUserService;
 
-  @Operation(summary = "게시글 업로드 API")
+  @Operation(summary = "좋아요 API")
   @ApiResponses(value = {
       @ApiResponse(
           responseCode = "200",
-          description = "게시글(포스트) 업로드 성공",
-          content = @Content(schema = @Schema(implementation = PostDto.PostUploadResponse.class))
+          description = "좋아요 성공",
+          content = @Content(schema = @Schema(implementation = LikeDto.LikeResponseDto.class))
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "게시글(포스트) 또는 유저 없음",
+          content = @Content(schema = @Schema(implementation = ErrorRes.class))
       ),
       @ApiResponse(
           responseCode = "500",
@@ -40,34 +43,31 @@ public class PostController {
           content = @Content(schema = @Schema(implementation = ErrorRes.class))
       )
   })
-  @PostMapping("")
-  public ResponseEntity<PostDto.PostUploadResponse> uploadPost(
-      @RequestBody PostDto.PostUploadRequest request) {
-    return ResponseEntity.ok(postService.uploadPost(request));
+  @PostMapping("/like")
+  public ResponseEntity<LikeResponseDto> postLike(@RequestBody LikeDto.LikeRequestDto request) {
+    return ResponseEntity.ok(likeUserService.like(request));
   }
 
-  @Operation(summary = "게시글 조회 API")
+  @Operation(summary = "좋아요 취소 API")
   @ApiResponses(value = {
       @ApiResponse(
           responseCode = "200",
-          description = "게시글 조회 성공",
-          content = @Content(schema = @Schema(implementation = PostDto.PostGetResponse.class))
+          description = "좋아요 취소 성공",
+          content = @Content(schema = @Schema(implementation = LikeDto.LikeResponseDto.class))
       ),
       @ApiResponse(
           responseCode = "404",
-          description = "해당 게시글 없음",
+          description = "게시글(포스트) 또는 유저 없음",
           content = @Content(schema = @Schema(implementation = ErrorRes.class))
       ),
       @ApiResponse(
           responseCode = "500",
-          description = "조회 실패",
+          description = "업로드 실패",
           content = @Content(schema = @Schema(implementation = ErrorRes.class))
       )
   })
-  @GetMapping("/{postId}/user/{userId}")
-  public ResponseEntity<PostDto.PostGetResponse> getPost(@PathVariable Long postId,
-      @PathVariable Long userId) {
-    return ResponseEntity.ok(postService.getPost(postId, userId));
+  @PostMapping("/unlike")
+  public ResponseEntity<LikeResponseDto> postUnlike(@RequestBody LikeDto.LikeRequestDto request) {
+    return ResponseEntity.ok(likeUserService.unlike(request));
   }
-
 }

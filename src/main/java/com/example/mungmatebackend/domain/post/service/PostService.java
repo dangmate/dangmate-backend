@@ -94,14 +94,14 @@ public class PostService {
         .build();
   }
 
-  public PostDto.PostGetResponse getPost(Long id){
-    Optional<Post> post = postRepository.findById(id);
+  public PostDto.PostGetResponse getPost(Long postId, Long userId){
+    Optional<Post> post = postRepository.findById(postId);
 
     if(post.isEmpty()){
       throw new BusinessException(ErrorCode.POST_NOT_FOUND);
     }
 
-    Optional<User> user = userRepository.findById(post.get().getUser().getId());
+    Optional<User> user = userRepository.findById(userId);
 
     String createdAt = "";
     LocalDateTime currentTime = LocalDateTime.now();
