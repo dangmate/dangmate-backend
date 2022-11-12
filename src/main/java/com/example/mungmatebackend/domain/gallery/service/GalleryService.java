@@ -10,6 +10,7 @@ import com.example.mungmatebackend.global.error.exception.BusinessException;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,9 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class GalleryService {
 
   private final AmazonS3Client amazonS3Client;
-  private String S3Bucket = "mungmate-bucket";
+  @Value("${cloud.aws.bucket}")
+  private String S3Bucket;
 
-  public GalleryDto.response uploadImage(GalleryDto.request request){
+  public GalleryDto.GalleryResponse uploadImage(GalleryDto.GalleryRequest request){
     MultipartFile multipartFile = request.getMultipartFile();
 
     String randomGeneratedString = RandomStringUtils.randomAlphanumeric(10);
@@ -42,7 +44,7 @@ public class GalleryService {
 
     String imagePath = amazonS3Client.getUrl(S3Bucket, randomGeneratedString).toString();
 
-   return GalleryDto.response.builder().imagePath(imagePath).build();
+   return GalleryDto.GalleryResponse.builder().imagePath(imagePath).build();
 
   }
 

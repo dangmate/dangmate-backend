@@ -47,7 +47,7 @@ public class GalleryController {
       @ApiResponse(
           responseCode = "200",
           description = "파일 업로드 성공",
-          content = @Content(schema = @Schema(implementation = GalleryDto.response.class))
+          content = @Content(schema = @Schema(implementation = GalleryDto.GalleryResponse.class))
       ),
       @ApiResponse(
           responseCode = "500",
@@ -56,11 +56,11 @@ public class GalleryController {
       )
   })
   @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<GalleryDto.response> upload(
+  public ResponseEntity<GalleryDto.GalleryResponse> upload(
       @ModelAttribute
       @RequestPart("multipartFile")
       @Parameter(description = "multipart/form-data 형식을 body로 받습니다. key 값은 multipartFile 입니다.")
-      GalleryDto.request request) {
+      GalleryDto.GalleryRequest request) {
     return ResponseEntity.ok(galleryService.uploadImage(request));
   }
 

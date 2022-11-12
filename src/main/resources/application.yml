@@ -5,7 +5,7 @@ springdoc:
   cache:
     disabled: true
 
-
+spring:
   jpa:
     show-sql: true
     properties:
@@ -13,8 +13,6 @@ springdoc:
         format_sql: true
         default_batch_fetch_size: 500
     open-in-view: false
-
-
   servlet:
     multipart:
       max-file-size: 10MB
@@ -25,3 +23,4 @@ logging:
   level:
     org.hibernate.type: trace
     com.example.mungmatebackend: debug
+

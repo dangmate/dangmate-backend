@@ -16,7 +16,7 @@ public class GalleryDto {
 
   @Data
   @Builder
-  public static class request implements Serializable {
+  public static class GalleryRequest implements Serializable {
     @NotBlank(message = "해당 값은 필수 입력 값입니다.")
     @Schema(example = "Input 업로드 파일")
     private MultipartFile multipartFile;
@@ -24,7 +24,7 @@ public class GalleryDto {
 
   @Data
   @Builder
-  public static class response{
+  public static class GalleryResponse{
     @Schema(example = "https://mungmate-bucket.s3.ap-northeast-2.amazonaws.com/7tCZjBltnA")
     private String imagePath;
   }
