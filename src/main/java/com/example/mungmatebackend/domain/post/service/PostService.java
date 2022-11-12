@@ -16,12 +16,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PostService {
 
   private final PostRepository postRepository;
@@ -93,7 +95,6 @@ public class PostService {
   }
 
   public PostDto.PostGetResponse getPost(Long id){
-
     Optional<Post> post = postRepository.findById(id);
 
     if(post.isEmpty()){
@@ -106,20 +107,20 @@ public class PostService {
     LocalDateTime currentTime = LocalDateTime.now();
     LocalDateTime savedTime = post.get().getCreatedAt();
 
-    if (ChronoUnit.YEARS.between(currentTime, savedTime) >= 1) {
-      int year = (int) ChronoUnit.YEARS.between(currentTime, savedTime);
+    if (ChronoUnit.YEARS.between(savedTime, currentTime) >= 1) {
+      int year = (int) ChronoUnit.YEARS.between(savedTime, currentTime);
       createdAt = year + "년 전";
-    }else if(ChronoUnit.MONTHS.between(currentTime, savedTime) >= 1){
-      int month = (int) ChronoUnit.MONTHS.between(currentTime, savedTime);
+    }else if(ChronoUnit.MONTHS.between(savedTime, currentTime) >= 1){
+      int month = (int) ChronoUnit.MONTHS.between(savedTime, currentTime);
       createdAt = month + "달 전";
-    }else if(ChronoUnit.DAYS.between(currentTime, savedTime) >= 1){
-      int day = (int) ChronoUnit.DAYS.between(currentTime, savedTime);
+    }else if(ChronoUnit.DAYS.between(savedTime, currentTime) >= 1){
+      int day = (int) ChronoUnit.DAYS.between(savedTime, currentTime);
       createdAt = day + "일 전";
-    }else if(ChronoUnit.HOURS.between(currentTime, savedTime) >= 1){
-      int hour = (int) ChronoUnit.HOURS.between(currentTime, savedTime);
+    }else if(ChronoUnit.HOURS.between(savedTime, currentTime) >= 1){
+      int hour = (int) ChronoUnit.HOURS.between(savedTime, currentTime);
       createdAt = hour + "시간 전";
-    }else if(ChronoUnit.MINUTES.between(currentTime, savedTime) >= 1){
-      int minute = (int) ChronoUnit.MINUTES.between(currentTime, savedTime);
+    }else if(ChronoUnit.MINUTES.between(savedTime, currentTime) >= 1){
+      int minute = (int) ChronoUnit.MINUTES.between(savedTime, currentTime);
       createdAt = minute + "분 전";
     }else{
       createdAt = "방금 전";
@@ -130,6 +131,11 @@ public class PostService {
     if(likeUser.isPresent()){
       isLike = true;
     }
+
+    int views = post.get().getViews();
+
+    post.get().setViews(post.get().getViews() + 1);
+    postRepository.save(post.get());
 
     return PostDto.PostGetResponse.builder()
         .profile(user.get().getProfile())
@@ -142,7 +148,7 @@ public class PostService {
         .comments(post.get().getComments())
         .likes(post.get().getLikes())
         .isLike(isLike)
-        .views(post.get().getViews())
+        .views(views)
         .build();
   }
 
