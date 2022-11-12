@@ -24,4 +24,6 @@ public class UserLoginRes {
   @Schema(example = "공덕동")
   private String location;
 
+  @Schema(example = "1")
+  private Long userId;
 }

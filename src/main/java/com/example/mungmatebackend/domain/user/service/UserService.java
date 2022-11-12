@@ -41,6 +41,7 @@ public class UserService {
         .email(user.get().getEmail())
         .fullName(user.get().getFullName())
         .location(user.get().getLocation())
+        .userId(user.get().getId())
         .build();
   }
 

@@ -1,5 +1,6 @@
 package com.example.mungmatebackend.api.posts.dto;
 
+import com.example.mungmatebackend.api.post.dto.PostDto.PostGetResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
@@ -25,6 +26,10 @@ public class PostsDto {
     @NotBlank(message = "해당 값은 필수 입력 값입니다.")
     @Schema(example = "5", description = "받아올 게시글 수")
     private Integer size;
+
+    @NotBlank(message = "해당 값은 필수 입력 값입니다.")
+    @Schema(example = "1", description = "유저 고유 Id 값")
+    private Long userId;
   }
 
   @Builder
@@ -32,7 +37,7 @@ public class PostsDto {
   public static class PostsResponse{
     @Schema(example = "공덕동")
     private String location;
-    private List<PostDto> posts;
+    private List<PostGetResponse> posts;
     @Schema(example = "34", description = "총 게시글 갯수")
     private Integer total;
   }
