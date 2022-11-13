@@ -27,7 +27,7 @@ public class ReplyController {
 
   private final ReplyService replyService;
 
-  @Operation(summary = "답글(대댓글) 작성 API")
+  @Operation(summary = "게시글 답글(대댓글) 작성 API")
   @ApiResponses(value = {
       @ApiResponse(
           responseCode = "200",
@@ -36,7 +36,7 @@ public class ReplyController {
       ),
       @ApiResponse(
           responseCode = "404",
-          description = "해당 포스트 또는 상위 댓글 없음",
+          description = "해당 포스트 || 상위 댓글 || 유저 없음",
           content = @Content(schema = @Schema(implementation = ErrorRes.class))
       ),
       @ApiResponse(

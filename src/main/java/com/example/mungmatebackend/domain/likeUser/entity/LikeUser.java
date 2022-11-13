@@ -19,7 +19,8 @@ import lombok.Setter;
 
 @Entity
 @Builder
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class LikeUser extends BaseEntity {
