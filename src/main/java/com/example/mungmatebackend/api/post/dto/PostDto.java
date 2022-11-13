@@ -59,6 +59,8 @@ public class PostDto {
     private Integer likes;
     @Schema(example = "true", description = "내가 좋아요 눌렀는지 / Boolean")
     private Boolean isLike;
+    @Schema(example = "true", description = "내가 작성한 게시글인지 / Boolean")
+    private Boolean isPost;
     @Schema(example = "13", description = "조회수")
     private Integer views;
   }

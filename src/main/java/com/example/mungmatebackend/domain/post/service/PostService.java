@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -105,33 +106,9 @@ public class PostService extends CreatedAt {
     Optional<User> user = userRepository.findById(userId);
 
     String createdAt = getCreatedAt(post.get().getCreatedAt());
-//    LocalDateTime currentTime = LocalDateTime.now();
-//    LocalDateTime savedTime = post.get().getCreatedAt();
-//
-//    if (ChronoUnit.YEARS.between(savedTime, currentTime) >= 1) {
-//      int year = (int) ChronoUnit.YEARS.between(savedTime, currentTime);
-//      createdAt = year + "년 전";
-//    }else if(ChronoUnit.MONTHS.between(savedTime, currentTime) >= 1){
-//      int month = (int) ChronoUnit.MONTHS.between(savedTime, currentTime);
-//      createdAt = month + "달 전";
-//    }else if(ChronoUnit.DAYS.between(savedTime, currentTime) >= 1){
-//      int day = (int) ChronoUnit.DAYS.between(savedTime, currentTime);
-//      createdAt = day + "일 전";
-//    }else if(ChronoUnit.HOURS.between(savedTime, currentTime) >= 1){
-//      int hour = (int) ChronoUnit.HOURS.between(savedTime, currentTime);
-//      createdAt = hour + "시간 전";
-//    }else if(ChronoUnit.MINUTES.between(savedTime, currentTime) >= 1){
-//      int minute = (int) ChronoUnit.MINUTES.between(savedTime, currentTime);
-//      createdAt = minute + "분 전";
-//    }else{
-//      createdAt = "방금 전";
-//    }
 
-    boolean isLike = false;
+
     Optional<LikeUser> likeUser = likeUserRepository.findByPostIdAndUserId(post.get().getId(), user.get().getId());
-    if(likeUser.isPresent()){
-      isLike = true;
-    }
 
     int views = post.get().getViews();
 
@@ -148,7 +125,8 @@ public class PostService extends CreatedAt {
         .createdAt(createdAt)
         .comments(post.get().getComments())
         .likes(post.get().getLikes())
-        .isLike(isLike)
+        .isLike(likeUser.isPresent())
+        .isPost(Objects.equals(user.get().getId(), post.get().getUser().getId()))
         .views(views)
         .build();
   }
