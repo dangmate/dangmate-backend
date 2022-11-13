@@ -27,9 +27,9 @@ public class CommentService extends CreatedAt {
   private final PostRepository postRepository;
   private final UserRepository userRepository;
 
-  public CommentDto.CommentPostResponse postComment(Long id,
+  public CommentDto.CommentPostResponse postComment(Long postId,
       CommentDto.CommentPostRequest request) {
-    Optional<Post> post = postRepository.findById(id);
+    Optional<Post> post = postRepository.findById(postId);
     Optional<User> user = userRepository.findById(request.getUserId());
 
     if (post.isEmpty()) {

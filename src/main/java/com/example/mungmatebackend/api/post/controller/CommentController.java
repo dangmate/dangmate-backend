@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -46,12 +47,12 @@ public class CommentController {
           content = @Content(schema = @Schema(implementation = ErrorRes.class))
       )
   })
-  @PostMapping("/{id}/comment")
+  @PostMapping("/{postId}/comment")
   public ResponseEntity<CommentDto.CommentPostResponse> postComment(
-      @Parameter(example = "1", description = "게시글 id")
-      @PathVariable Long id,
+      @Parameter(name = "postId", example = "1", description = "게시글 id")
+      @PathVariable Long postId,
       @RequestBody CommentDto.CommentPostRequest request){
-    return ResponseEntity.ok(commentService.postComment(id, request));
+    return ResponseEntity.ok(commentService.postComment(postId, request));
   }
 
   @Operation(summary = "게시글 댓글 수정 API")
@@ -120,7 +121,7 @@ public class CommentController {
           content = @Content(schema = @Schema(implementation = ErrorRes.class))
       )
   })
-  @PutMapping("/{postId}/comment/{commentId}")
+  @DeleteMapping("/{postId}/comment/{commentId}")
   public ResponseEntity<CommentDto.CommentDeleteResponse> deleteComment(
       @Parameter(name="postId", example = "1", description = "게시글 id")
       @PathVariable Long postId,
