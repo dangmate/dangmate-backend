@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,7 +67,7 @@ public class LikeController {
           content = @Content(schema = @Schema(implementation = ErrorRes.class))
       )
   })
-  @PostMapping("/unlike")
+  @DeleteMapping("/unlike")
   public ResponseEntity<LikeResponseDto> postUnlike(@RequestBody LikeDto.LikeRequestDto request) {
     return ResponseEntity.ok(likeUserService.unlike(request));
   }
