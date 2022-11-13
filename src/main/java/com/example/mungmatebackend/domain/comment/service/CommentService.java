@@ -1,6 +1,6 @@
 package com.example.mungmatebackend.domain.comment.service;
 
-import com.example.mungmatebackend.api.comments.dto.CommentsDto;
+import com.example.mungmatebackend.api.post.dto.CommentsDto;
 import com.example.mungmatebackend.api.post.dto.CommentDto;
 import com.example.mungmatebackend.api.post.dto.CommentDto.CommentGetResponse;
 import com.example.mungmatebackend.domain.comment.entity.Comment;
@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 @Service

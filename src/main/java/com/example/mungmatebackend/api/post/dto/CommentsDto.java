@@ -1,4 +1,4 @@
-package com.example.mungmatebackend.api.comments.dto;
+package com.example.mungmatebackend.api.post.dto;
 
 import com.example.mungmatebackend.api.post.dto.CommentDto;
 import java.util.List;

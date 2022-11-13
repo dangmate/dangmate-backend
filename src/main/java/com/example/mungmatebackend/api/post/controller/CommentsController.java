@@ -1,7 +1,6 @@
-package com.example.mungmatebackend.api.comments.controller;
+package com.example.mungmatebackend.api.post.controller;
 
-import com.example.mungmatebackend.api.comments.dto.CommentsDto;
-import com.example.mungmatebackend.api.user.login.dto.response.UserLoginRes;
+import com.example.mungmatebackend.api.post.dto.CommentsDto;
 import com.example.mungmatebackend.domain.comment.service.CommentService;
 import com.example.mungmatebackend.global.error.dto.ErrorRes;
 import io.swagger.v3.oas.annotations.Operation;
