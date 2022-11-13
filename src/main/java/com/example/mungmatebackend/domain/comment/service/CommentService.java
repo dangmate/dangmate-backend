@@ -67,15 +67,15 @@ public class CommentService extends CreatedAt {
     Optional<Comment> comment = commentRepository.findById(commentId);
     Optional<Post> post = postRepository.findById(postId);
 
-    if(post.isEmpty()){
+    if (post.isEmpty()) {
       throw new BusinessException(ErrorCode.POST_NOT_FOUND);
     }
 
-    if(comment.isEmpty()){
+    if (comment.isEmpty()) {
       throw new BusinessException(ErrorCode.COMMENT_NOT_FOUND);
     }
 
-    if(!Objects.equals(comment.get().getUser().getId(), request.getUserId())){
+    if (!Objects.equals(comment.get().getUser().getId(), request.getUserId())) {
       throw new BusinessException(ErrorCode.COMMENT_USER_NOT_MATCH);
     }
 
@@ -85,7 +85,7 @@ public class CommentService extends CreatedAt {
     return CommentDto.CommentPutResponse.builder().build();
   }
 
-  public CommentsDto.CommentsGetResponse getComments(Long postId) {
+  public CommentsDto.CommentsGetResponse getComments(Long postId, Long userId) {
 
     List<Comment> comments = commentRepository.findByPostId(postId);
 
@@ -106,6 +106,7 @@ public class CommentService extends CreatedAt {
           .createdAt(createdAt)
           .content(comment.getContent())
           .reply(comment.getReply())
+          .isComment(Objects.equals(comment.getUser().getId(), userId))
           .build());
     }
 
@@ -118,19 +119,19 @@ public class CommentService extends CreatedAt {
       Long postId,
       Long commentId,
       CommentDto.CommentDeleteRequest request
-  ){
+  ) {
     Optional<Post> post = postRepository.findById(postId);
     Optional<Comment> comment = commentRepository.findById(commentId);
 
-    if(post.isEmpty()){
+    if (post.isEmpty()) {
       throw new BusinessException(ErrorCode.POST_NOT_FOUND);
     }
 
-    if(comment.isEmpty()){
+    if (comment.isEmpty()) {
       throw new BusinessException(ErrorCode.COMMENT_NOT_FOUND);
     }
 
-    if(!Objects.equals(comment.get().getUser().getId(), request.getUserId())){
+    if (!Objects.equals(comment.get().getUser().getId(), request.getUserId())) {
       throw new BusinessException(ErrorCode.COMMENT_USER_NOT_MATCH);
     }
 

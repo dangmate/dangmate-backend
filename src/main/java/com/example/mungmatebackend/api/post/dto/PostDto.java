@@ -51,7 +51,7 @@ public class PostDto {
     private String content;
     @Schema(example = "공덕동")
     private String location;
-    @Schema(example = "1분", description = "'방금 전', 'n분 전', 'n시간 전', 'n일 전', 'n달 전', 'n년 전' 중 1개")
+    @Schema(example = "1분 전", description = "'방금 전', 'n분 전', 'n시간 전', 'n일 전', 'n달 전', 'n년 전' 중 1개")
     private String createdAt;
     @Schema(example = "0", description = "댓글 갯수 / Integer")
     private Integer comments;

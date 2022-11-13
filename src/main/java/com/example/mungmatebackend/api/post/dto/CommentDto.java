@@ -72,6 +72,8 @@ public class CommentDto {
     private String content;
     @Schema(example = "0", description = "답글 갯수")
     private Integer reply;
+    @Schema(example = "true", description = "댓글 작성 여부")
+    private Boolean isComment;
   }
 
   @Data

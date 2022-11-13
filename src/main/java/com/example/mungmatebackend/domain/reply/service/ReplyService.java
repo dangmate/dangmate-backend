@@ -1,9 +1,12 @@
 package com.example.mungmatebackend.domain.reply.service;
 
-import com.example.mungmatebackend.api.post.dto.PostDto;
+import com.example.mungmatebackend.api.post.dto.RepliesDto;
+import com.example.mungmatebackend.api.post.dto.RepliesDto.RepliesGetResponse;
 import com.example.mungmatebackend.api.post.dto.ReplyDto;
+import com.example.mungmatebackend.api.post.dto.ReplyDto.ReplyGetResponse;
 import com.example.mungmatebackend.domain.comment.entity.Comment;
 import com.example.mungmatebackend.domain.comment.repository.CommentRepository;
+import com.example.mungmatebackend.domain.common.CreatedAt;
 import com.example.mungmatebackend.domain.post.entity.Post;
 import com.example.mungmatebackend.domain.post.repository.PostRepository;
 import com.example.mungmatebackend.domain.reply.entity.Reply;
@@ -12,19 +15,55 @@ import com.example.mungmatebackend.domain.user.entity.User;
 import com.example.mungmatebackend.domain.user.repository.UserRepository;
 import com.example.mungmatebackend.global.error.ErrorCode;
 import com.example.mungmatebackend.global.error.exception.BusinessException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import javax.swing.text.html.Option;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ReplyService {
+public class ReplyService extends CreatedAt {
   private final ReplyRepository replyRepository;
   private final PostRepository postRepository;
   private final CommentRepository commentRepository;
   private final UserRepository userRepository;
+
+  public RepliesDto.RepliesGetResponse getReplies(
+      Long userId,
+      Long postId,
+      Long commentId
+  ){
+
+    Optional<Post> post = postRepository.findById(postId);
+    List<Reply> replies = replyRepository.findByCommentId(commentId);
+
+    if(post.isEmpty()){
+      throw new BusinessException(ErrorCode.POST_NOT_FOUND);
+    }
+
+    if(replies == null || replies.isEmpty()){
+      throw new BusinessException(ErrorCode.REPLY_NOT_FOUND);
+    }
+
+    List<ReplyDto.ReplyGetResponse> replyGetResponses = new ArrayList<>();
+    for(Reply reply: replies){
+      replyGetResponses.add(ReplyGetResponse.builder()
+          .replyId(reply.getId())
+          .profile(reply.getUser().getProfile())
+          .fullName(reply.getUser().getFullName())
+          .createdAt(getCreatedAt(reply.getCreatedAt()))
+          .isReply(Objects.equals(reply.getUser().getId(), userId))
+          .content(reply.getContent())
+          .build());
+    }
+
+    return RepliesGetResponse.builder()
+        .replies(replyGetResponses)
+        .build();
+  }
+
   public ReplyDto.ReplyPostResponse postReply(Long postId, ReplyDto.ReplyPostRequest request){
 
     Optional<Post> post = postRepository.findById(postId);
