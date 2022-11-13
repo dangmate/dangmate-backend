@@ -138,15 +138,15 @@ public class PostService extends CreatedAt {
   ) {
     Optional<Post> post = postRepository.findById(postId);
 
-    if(post.isEmpty()){
+    if (post.isEmpty()) {
       throw new BusinessException(ErrorCode.POST_NOT_FOUND);
     }
 
-    if(!Objects.equals(post.get().getUser().getId(), userId)){
+    if (!Objects.equals(post.get().getUser().getId(), userId)) {
       throw new BusinessException(ErrorCode.POST_USER_NOT_MATCH);
     }
 
-    if(!Objects.equals(request.getThumbnail(), post.get().getThumbnail())){
+    if (!Objects.equals(request.getThumbnail(), post.get().getThumbnail())) {
       galleryService.deleteImage(post.get().getThumbnail());
     }
 
@@ -163,6 +163,26 @@ public class PostService extends CreatedAt {
         .category(post.get().getCategory())
         .thumbnail(post.get().getThumbnail())
         .content(post.get().getContent())
+        .build();
+  }
+
+  public PostDto.PostDeleteResponse deletePost(Long postId, Long userId) {
+    Optional<Post> post = postRepository.findById(postId);
+
+    if (post.isEmpty()) {
+      throw new BusinessException(ErrorCode.POST_NOT_FOUND);
+    }
+
+    if (!Objects.equals(post.get().getUser().getId(), userId)) {
+      throw new BusinessException(ErrorCode.POST_USER_NOT_MATCH);
+    }
+
+    post.get().setIsActive(false);
+    postRepository.save(post.get());
+
+    return PostDto.PostDeleteResponse.builder()
+        .statusCode("200")
+        .postId(postId)
         .build();
   }
 

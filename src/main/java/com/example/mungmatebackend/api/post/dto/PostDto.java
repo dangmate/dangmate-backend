@@ -99,5 +99,14 @@ public class PostDto {
     @Schema(example = "OO동에 이사온지 얼마 되지 않아 아는 친구가 한 명도 없어요ㅜㅜ나이는 25살 여자입니다!")
     private String content;
   }
+  @Data
+  @Builder
+  public static class PostDeleteResponse{
+    @Schema(example = "200")
+    private String statusCode;
+
+    @Schema(example = "1")
+    private Long postId;
+  }
 
 }
