@@ -66,10 +66,10 @@ public class ReplyService {
         .build();
   }
 
-  public ReplyDto.ReplyPutResponse putReply(Long postId, ReplyDto.ReplyPutRequest request){
+  public ReplyDto.ReplyPutResponse putReply(Long postId, Long replyId, ReplyDto.ReplyPutRequest request){
     Optional<Post> post = postRepository.findById(postId);
     Optional<Comment> comment = commentRepository.findById(request.getCommentId());
-    Optional<Reply> reply = replyRepository.findById(request.getReplyId());
+    Optional<Reply> reply = replyRepository.findById(replyId);
     Optional<User> user = userRepository.findById(request.getUserId());
 
     if(post.isEmpty()){
@@ -91,6 +91,48 @@ public class ReplyService {
     reply.get().setContent(request.getContent());
     replyRepository.save(reply.get());
 
-    return ReplyDto.ReplyPutResponse.builder().build();
+    return ReplyDto.ReplyPutResponse.builder()
+        .statusCode("200")
+        .userId(request.getUserId())
+        .replyId(replyId)
+        .content(request.getContent())
+        .build();
   }
+
+  public ReplyDto.ReplyDeleteResponse deleteReply(Long postId, Long replyId, ReplyDto.ReplyDeleteRequest request){
+    Optional<Post> post = postRepository.findById(postId);
+    Optional<Comment> comment = commentRepository.findById(request.getCommentId());
+    Optional<Reply> reply = replyRepository.findById(replyId);
+    Optional<User> user = userRepository.findById(request.getUserId());
+
+    if(post.isEmpty()){
+      throw new BusinessException(ErrorCode.POST_NOT_FOUND);
+    }
+
+    if(comment.isEmpty()){
+      throw new BusinessException(ErrorCode.COMMENT_NOT_FOUND);
+    }
+
+    if(user.isEmpty()){
+      throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+    }
+
+    if(!Objects.equals(user.get().getId(),reply.get().getUser().getId())){
+      throw new BusinessException(ErrorCode.REPLY_USER_NOT_MATCH);
+    }
+
+    post.get().setComments(post.get().getComments() - 1);
+    postRepository.save(post.get());
+
+    comment.get().setReply(comment.get().getReply() - 1);
+    commentRepository.save(comment.get());
+
+    replyRepository.deleteById(replyId);
+
+    return ReplyDto.ReplyDeleteResponse.builder()
+        .userId(request.getUserId())
+        .replyId(replyId)
+        .build();
+  }
+
 }
