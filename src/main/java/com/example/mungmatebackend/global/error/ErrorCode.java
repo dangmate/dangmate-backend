@@ -12,6 +12,7 @@ public enum ErrorCode {
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "일치하는 포스트가 없습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "일치하는 유저가 없습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "댓글이 존재하지 않습니다."),
+    POST_USER_NOT_MATCH(HttpStatus.UNAUTHORIZED, "401", "해당 게시글의 소유자와 요청 유저가 일치하지 않습니다."),
     ;
 
     ErrorCode(HttpStatus httpStatus, String errorCode, String message) {

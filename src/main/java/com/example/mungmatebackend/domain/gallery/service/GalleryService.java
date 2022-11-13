@@ -48,4 +48,11 @@ public class GalleryService {
 
   }
 
+  public void deleteImage(String imagePath){
+    boolean isExistObject = amazonS3Client.doesObjectExist(S3Bucket, imagePath);
+    if (isExistObject == true) {
+      amazonS3Client.deleteObject(S3Bucket, imagePath);
+    }
+  }
+
 }

@@ -62,8 +62,6 @@ public class Post extends BaseEntity {
   @ColumnDefault("true")
   private Boolean isActive;
 
-
-
   @OneToMany(mappedBy = "post")
   @Builder.Default
   private List<LikeUser> likeUsers = new ArrayList<>();
