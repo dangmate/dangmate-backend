@@ -14,6 +14,7 @@ import com.example.mungmatebackend.global.error.ErrorCode;
 import com.example.mungmatebackend.global.error.exception.BusinessException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -56,6 +57,32 @@ public class CommentService extends CreatedAt {
         .userId(user.get().getId())
         .content(request.getContent())
         .build();
+  }
+
+  public CommentDto.CommentPutResponse putComment(
+      Long postId,
+      Long commentId,
+      CommentDto.CommentPutRequest request
+  ) {
+    Optional<Comment> comment = commentRepository.findById(commentId);
+    Optional<Post> post = postRepository.findById(postId);
+
+    if(post.isEmpty()){
+      throw new BusinessException(ErrorCode.POST_NOT_FOUND);
+    }
+
+    if(comment.isEmpty()){
+      throw new BusinessException(ErrorCode.COMMENT_NOT_FOUND);
+    }
+
+    if(!Objects.equals(comment.get().getUser().getId(), request.getUserId())){
+      throw new BusinessException(ErrorCode.COMMENT_USER_NOT_MATCH);
+    }
+
+    comment.get().setContent(request.getContent());
+    commentRepository.save(comment.get());
+
+    return CommentDto.CommentPutResponse.builder().build();
   }
 
   public CommentsDto.CommentsGetResponse getComments(Long postId) {
