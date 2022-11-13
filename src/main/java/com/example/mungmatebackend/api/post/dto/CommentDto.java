@@ -74,4 +74,21 @@ public class CommentDto {
     private Integer reply;
   }
 
+  @Data
+  @Builder
+  public static class CommentDeleteRequest {
+    @Schema(example = "1", description = "유저 id")
+    private Long userId;
+  }
+
+  @Data
+  @Builder
+  public static class CommentDeleteResponse {
+    @Schema(example = "200")
+    private String statusCode;
+    @Schema(example = "1")
+    private Long userId;
+    @Schema(example = "1")
+    private Long commentId;
+  }
 }

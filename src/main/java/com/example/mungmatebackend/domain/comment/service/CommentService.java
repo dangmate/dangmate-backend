@@ -114,4 +114,34 @@ public class CommentService extends CreatedAt {
         .build();
   }
 
+  public CommentDto.CommentDeleteResponse deleteComment(
+      Long postId,
+      Long commentId,
+      CommentDto.CommentDeleteRequest request
+  ){
+    Optional<Post> post = postRepository.findById(postId);
+    Optional<Comment> comment = commentRepository.findById(commentId);
+
+    if(post.isEmpty()){
+      throw new BusinessException(ErrorCode.POST_NOT_FOUND);
+    }
+
+    if(comment.isEmpty()){
+      throw new BusinessException(ErrorCode.COMMENT_NOT_FOUND);
+    }
+
+    if(!Objects.equals(comment.get().getUser().getId(), request.getUserId())){
+      throw new BusinessException(ErrorCode.COMMENT_USER_NOT_MATCH);
+    }
+
+    commentRepository.deleteById(commentId);
+    post.get().setComments(post.get().getComments() - 1);
+
+    return CommentDto.CommentDeleteResponse.builder()
+        .statusCode("200")
+        .userId(request.getUserId())
+        .commentId(commentId)
+        .build();
+  }
+
 }

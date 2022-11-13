@@ -92,4 +92,42 @@ public class CommentController {
     return ResponseEntity.ok(commentService.putComment(postId, commentId, request));
   }
 
+  @Operation(summary = "게시글 댓글 삭제 API")
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "댓글 삭제 성공",
+          content = @Content(schema = @Schema(implementation = CommentDto.CommentPostResponse.class))
+      ),
+      @ApiResponse(
+          responseCode = "200",
+          description = "해당 게시글 없음",
+          content = @Content(schema = @Schema(implementation = ErrorRes.class))
+      ),
+      @ApiResponse(
+          responseCode = "401",
+          description = "해당 댓글을 소유한 유저가 아님",
+          content = @Content(schema = @Schema(implementation = ErrorRes.class))
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "해당 댓글 없음",
+          content = @Content(schema = @Schema(implementation = ErrorRes.class))
+      ),
+      @ApiResponse(
+          responseCode = "500",
+          description = "댓글 삭제 실패",
+          content = @Content(schema = @Schema(implementation = ErrorRes.class))
+      )
+  })
+  @PutMapping("/{postId}/comment/{commentId}")
+  public ResponseEntity<CommentDto.CommentDeleteResponse> deleteComment(
+      @Parameter(name="postId", example = "1", description = "게시글 id")
+      @PathVariable Long postId,
+      @Parameter(name="commentId", example = "1", description = "댓글 id")
+      @PathVariable Long commentId,
+      @RequestBody CommentDto.CommentDeleteRequest request){
+    return ResponseEntity.ok(commentService.deleteComment(postId, commentId, request));
+  }
+
 }
