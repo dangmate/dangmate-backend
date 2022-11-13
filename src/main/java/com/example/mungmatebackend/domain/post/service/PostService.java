@@ -1,6 +1,7 @@
 package com.example.mungmatebackend.domain.post.service;
 
 import com.example.mungmatebackend.api.post.dto.PostDto;
+import com.example.mungmatebackend.api.post.dto.PostDto.PostGetResponse;
 import com.example.mungmatebackend.api.posts.dto.PostsDto;
 import com.example.mungmatebackend.domain.common.CreatedAt;
 import com.example.mungmatebackend.domain.gallery.service.GalleryService;
@@ -13,6 +14,7 @@ import com.example.mungmatebackend.domain.user.repository.UserRepository;
 import com.example.mungmatebackend.global.error.ErrorCode;
 import com.example.mungmatebackend.global.error.exception.BusinessException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -32,49 +34,57 @@ public class PostService extends CreatedAt {
   private final LikeUserRepository likeUserRepository;
   private final GalleryService galleryService;
 
-  private PostsDto.PostsResponse getAllList(PostsDto.PostsRequest request) {
-    List<Post> posts = postRepository.findAll(Sort.by(Direction.DESC, "id"));
+  private PostsDto.GetPostsResponse getAllList(
+      Long size,
+      Long lastPostId,
+      PostsDto.GetPostsRequest request
+  ) {
+    List<Post> posts = postRepository.findByIdLessThanANDisActiveOrderByIdDesc(lastPostId, true);
+    List<PostGetResponse> postGetResponses = new ArrayList<>();
 
     for (Post post : posts) {
-      User user = post.getUser();
-      String profile = user.getProfile();
-      String fullName = user.getFullName();
-      String category = post.getCategory();
-      String thumbnail = post.getThumbnail();
-      String content = post.getContent();
-      String location = post.getLocation();
-      LocalDateTime createdAt = post.getCreatedAt();
-      Integer views = post.getViews();
+      Optional<LikeUser> likeUser = likeUserRepository.findByPostIdAndUserId(post.getId(),
+          request.getUserId());
 
+      postGetResponses.add(PostGetResponse.builder()
+          .profile(post.getUser().getProfile())
+          .fullName(post.getUser().getFullName())
+          .category(post.getCategory())
+          .thumbnail(post.getThumbnail())
+          .content(post.getContent())
+          .location(post.getLocation())
+          .createdAt(getCreatedAt(post.getCreatedAt()))
+          .comments(post.getComments())
+          .likes(post.getLikes())
+          .isLike(likeUser.isPresent())
+          .isPost(Objects.equals(post.getUser().getId(), request.getUserId()))
+          .views(post.getViews())
+          .build());
     }
 
-//    PostDto.builder()
-//        .profile()
-//        .build();
-
-//    return PostsDto.PostsResponse.builder()
-//        .location(request.getLocation())
-//        .posts(
-//            List < PostDto > PostDto.builder().build();
-//        )
-//        .total(posts.size())
-//        .build();
-
-    return PostsDto.PostsResponse.builder().build();
+    return PostsDto.GetPostsResponse.builder()
+        .total(posts.size())
+        .posts(postGetResponses)
+        .location(request.getLocation())
+        .build();
   }
 
-  public PostsDto.PostsResponse getPosts(PostsDto.PostsRequest request) {
+  public PostsDto.GetPostsResponse getPosts(
+      Long size,
+      Long lastPostId,
+      PostsDto.GetPostsRequest request
+  ) {
 
     String category = request.getCategory();
     String location = request.getLocation();
 
     if (category.equals("all")) {
-      return getAllList(request);
+      return getAllList(size, lastPostId, request);
     }
 
     List<Post> posts = postRepository.findByCategory(category);
 
-    return PostsDto.PostsResponse.builder().build();
+    return PostsDto.GetPostsResponse.builder().build();
   }
 
   public com.example.mungmatebackend.api.post.dto.PostDto.PostUploadResponse uploadPost(

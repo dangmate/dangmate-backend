@@ -11,7 +11,7 @@ public class PostsDto {
 
   @Builder
   @Data
-  public static class PostsRequest{
+  public static class GetPostsRequest{
     @NotBlank(message = "해당 값은 필수 입력 값입니다.")
     @Schema(example = "공덕동")
     private String location;
@@ -20,13 +20,6 @@ public class PostsDto {
     @Schema(example = "산책 메이트", description = "'all', '산책 메이트', '댕댕 이야기' 중 1개")
     private String category;
 
-    @Schema(example = "27", description = "마지막 게시글 id 값", nullable = true)
-    private Integer lastPostId;
-
-    @NotBlank(message = "해당 값은 필수 입력 값입니다.")
-    @Schema(example = "5", description = "받아올 게시글 수")
-    private Integer size;
-
     @NotBlank(message = "해당 값은 필수 입력 값입니다.")
     @Schema(example = "1", description = "유저 고유 Id 값")
     private Long userId;
@@ -34,7 +27,7 @@ public class PostsDto {
 
   @Builder
   @Data
-  public static class PostsResponse{
+  public static class GetPostsResponse{
     @Schema(example = "공덕동")
     private String location;
     private List<PostGetResponse> posts;

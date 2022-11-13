@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
   List<Post> findByCategory(String category);
+  List<Post> findByIdLessThanANDisActiveOrderByIdDesc(Long id, Boolean isActive);
 }
