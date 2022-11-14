@@ -39,7 +39,7 @@ public class PostService extends CreatedAt {
       Long lastPostId,
       PostsDto.GetPostsRequest request
   ) {
-    List<Post> posts = postRepository.findByIdLessThanANDisActiveOrderByIdDesc(lastPostId, true);
+    List<Post> posts = postRepository.findAllListNative(size, lastPostId, request.getLocation());
     List<PostGetResponse> postGetResponses = new ArrayList<>();
 
     for (Post post : posts) {
@@ -76,15 +76,39 @@ public class PostService extends CreatedAt {
   ) {
 
     String category = request.getCategory();
-    String location = request.getLocation();
 
     if (category.equals("all")) {
       return getAllList(size, lastPostId, request);
     }
 
-    List<Post> posts = postRepository.findByCategory(category);
+    List<Post> posts = postRepository.findByListNative(size, lastPostId, request.getLocation(), category);
+    List<PostGetResponse> postGetResponses = new ArrayList<>();
 
-    return PostsDto.GetPostsResponse.builder().build();
+    for (Post post : posts) {
+      Optional<LikeUser> likeUser = likeUserRepository.findByPostIdAndUserId(post.getId(),
+          request.getUserId());
+
+      postGetResponses.add(PostGetResponse.builder()
+          .profile(post.getUser().getProfile())
+          .fullName(post.getUser().getFullName())
+          .category(post.getCategory())
+          .thumbnail(post.getThumbnail())
+          .content(post.getContent())
+          .location(post.getLocation())
+          .createdAt(getCreatedAt(post.getCreatedAt()))
+          .comments(post.getComments())
+          .likes(post.getLikes())
+          .isLike(likeUser.isPresent())
+          .isPost(Objects.equals(post.getUser().getId(), request.getUserId()))
+          .views(post.getViews())
+          .build());
+    }
+
+    return PostsDto.GetPostsResponse.builder()
+        .total(posts.size())
+        .posts(postGetResponses)
+        .location(request.getLocation())
+        .build();
   }
 
   public com.example.mungmatebackend.api.post.dto.PostDto.PostUploadResponse uploadPost(
