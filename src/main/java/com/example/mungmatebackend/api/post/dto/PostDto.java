@@ -39,6 +39,8 @@ public class PostDto {
   @Data
   @Builder
   public static class PostGetResponse{
+    @Schema(example = "1")
+    private Long postId;
     @Schema(example = "https://mungmate-bucket.s3.ap-northeast-2.amazonaws.com/AbCoikG9xH")
     private String profile;
     @Schema(example = "소심쟁이 제이")

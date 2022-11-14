@@ -47,6 +47,7 @@ public class PostService extends CreatedAt {
           request.getUserId());
 
       postGetResponses.add(PostGetResponse.builder()
+          .postId(post.getId())
           .profile(post.getUser().getProfile())
           .fullName(post.getUser().getFullName())
           .category(post.getCategory())
@@ -81,7 +82,8 @@ public class PostService extends CreatedAt {
       return getAllList(size, lastPostId, request);
     }
 
-    List<Post> posts = postRepository.findByListNative(size, lastPostId, request.getLocation(), category);
+    List<Post> posts = postRepository.findByListNative(size, lastPostId, request.getLocation(),
+        category);
     List<PostGetResponse> postGetResponses = new ArrayList<>();
 
     for (Post post : posts) {
@@ -89,6 +91,7 @@ public class PostService extends CreatedAt {
           request.getUserId());
 
       postGetResponses.add(PostGetResponse.builder()
+          .postId(post.getId())
           .profile(post.getUser().getProfile())
           .fullName(post.getUser().getFullName())
           .category(post.getCategory())
