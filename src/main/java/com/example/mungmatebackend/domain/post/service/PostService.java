@@ -153,6 +153,7 @@ public class PostService extends CreatedAt {
     postRepository.save(post.get());
 
     return PostDto.PostGetResponse.builder()
+        .postId(postId)
         .profile(user.get().getProfile())
         .fullName(user.get().getFullName())
         .category(post.get().getCategory())
