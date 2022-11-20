@@ -114,6 +114,38 @@ public class PostService extends CreatedAt {
         .build();
   }
 
+  public PostsDto.GetPostsResponse getAllPosts(
+      Long size,
+      Long lastPostId
+  ) {
+    List<Post> posts = postRepository.findAll(Sort.by(Direction.DESC,"id"));
+    List<PostGetResponse> postGetResponses = new ArrayList<>();
+    for (Post post : posts) {
+
+      postGetResponses.add(PostGetResponse.builder()
+          .postId(post.getId())
+          .profile(post.getUser().getProfile())
+          .fullName(post.getUser().getFullName())
+          .category(post.getCategory())
+          .thumbnail(post.getThumbnail())
+          .content(post.getContent())
+          .location(post.getLocation())
+          .createdAt(getCreatedAt(post.getCreatedAt()))
+          .comments(post.getComments())
+          .likes(post.getLikes())
+          .isLike(false)
+          .isPost(false)
+          .views(post.getViews())
+          .build());
+    }
+
+    return PostsDto.GetPostsResponse.builder()
+        .total(posts.size())
+        .posts(postGetResponses)
+        .location(null)
+        .build();
+  }
+
   public com.example.mungmatebackend.api.post.dto.PostDto.PostUploadResponse uploadPost(
       com.example.mungmatebackend.api.post.dto.PostDto.PostUploadRequest request) {
 

@@ -1,6 +1,5 @@
 package com.example.mungmatebackend.api.post.controller;
 
-import com.example.mungmatebackend.api.post.dto.LikeDto;
 import com.example.mungmatebackend.api.post.dto.PostDto;
 import com.example.mungmatebackend.domain.post.service.PostService;
 import com.example.mungmatebackend.global.error.dto.ErrorRes;

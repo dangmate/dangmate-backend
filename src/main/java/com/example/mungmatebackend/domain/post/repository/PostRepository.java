@@ -15,4 +15,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
   @Query(value = "select * from post where id < :id and is_active = 1 and location = :location and category = :category order by id desc limit :size",
       nativeQuery = true)
   List<Post> findByListNative(Long size, Long id, String location, String category);
+
+
 }

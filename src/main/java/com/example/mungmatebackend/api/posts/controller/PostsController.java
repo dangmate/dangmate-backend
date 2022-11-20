@@ -52,4 +52,27 @@ public class PostsController {
     return ResponseEntity.ok(postService.getPosts(size, lastPostId, request));
   }
 
+  @Operation(summary = "게시글 리스트 조회(구경하기) API")
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "리스트 조회 성공",
+          content = @Content(schema = @Schema(implementation = PostsDto.GetPostsResponse.class))
+      ),
+      @ApiResponse(
+          responseCode = "500",
+          description = "리스트 불러오기 실패",
+          content = @Content(schema = @Schema(implementation = ErrorRes.class))
+      )
+  })
+  @GetMapping("")
+  public ResponseEntity<PostsDto.GetPostsResponse> getAllPosts(
+      @Parameter(name = "size", description = "받아올 리스트의 개수", example = "5")
+      @RequestParam Long size,
+      @Parameter(name = "lastPostId", description = "마지막으로 본 게시글 id", example = "10")
+      @RequestParam(required = false) Long lastPostId
+  ) {
+    return ResponseEntity.ok(postService.getAllPosts(size, lastPostId));
+  }
+
 }
