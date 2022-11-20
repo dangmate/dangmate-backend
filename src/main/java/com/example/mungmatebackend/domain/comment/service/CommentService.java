@@ -102,6 +102,7 @@ public class CommentService extends CreatedAt {
 
       commentGetResponses.add(CommentGetResponse.builder()
           .commentId(comment.getId())
+          .profile(user.get().getProfile())
           .fullName(user.get().getFullName())
           .createdAt(createdAt)
           .content(comment.getContent())

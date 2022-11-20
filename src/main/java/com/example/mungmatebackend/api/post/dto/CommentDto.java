@@ -64,6 +64,8 @@ public class CommentDto {
 
     @Schema(example = "1")
     private Long commentId;
+    @Schema(example = "https://mungmate-bucket.s3.ap-northeast-2.amazonaws.com/AbCoikG9xH")
+    private String profile;
     @Schema(example = "소심쟁이 제이")
     private String fullName;
     @Schema(example = "방금 전")
