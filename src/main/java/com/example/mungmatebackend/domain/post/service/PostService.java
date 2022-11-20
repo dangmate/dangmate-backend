@@ -3,18 +3,23 @@ package com.example.mungmatebackend.domain.post.service;
 import com.example.mungmatebackend.api.post.dto.PostDto;
 import com.example.mungmatebackend.api.post.dto.PostDto.PostGetResponse;
 import com.example.mungmatebackend.api.posts.dto.PostsDto;
+import com.example.mungmatebackend.domain.comment.entity.Comment;
+import com.example.mungmatebackend.domain.comment.repository.CommentRepository;
 import com.example.mungmatebackend.domain.common.CreatedAt;
 import com.example.mungmatebackend.domain.gallery.service.GalleryService;
 import com.example.mungmatebackend.domain.likeUser.entity.LikeUser;
 import com.example.mungmatebackend.domain.likeUser.repository.LikeUserRepository;
 import com.example.mungmatebackend.domain.post.entity.Post;
 import com.example.mungmatebackend.domain.post.repository.PostRepository;
+import com.example.mungmatebackend.domain.reply.entity.Reply;
+import com.example.mungmatebackend.domain.reply.repository.ReplyRepository;
 import com.example.mungmatebackend.domain.user.entity.User;
 import com.example.mungmatebackend.domain.user.repository.UserRepository;
 import com.example.mungmatebackend.global.error.ErrorCode;
 import com.example.mungmatebackend.global.error.exception.BusinessException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,7 +38,8 @@ public class PostService extends CreatedAt {
   private final UserRepository userRepository;
   private final LikeUserRepository likeUserRepository;
   private final GalleryService galleryService;
-
+  private final CommentRepository commentRepository;
+  private final ReplyRepository replyRepository;
   private PostsDto.GetPostsResponse getAllList(
       Long size,
       Long lastPostId,
@@ -167,9 +173,24 @@ public class PostService extends CreatedAt {
 
   public PostDto.PostGetResponse getPost(Long postId, Long userId) {
     Optional<Post> post = postRepository.findById(postId);
+    List<Comment> comments = commentRepository.findByPostId(postId);
 
     if (post.isEmpty()) {
       throw new BusinessException(ErrorCode.POST_NOT_FOUND);
+    }
+
+    HashSet<Long> set = new HashSet<>();
+
+    if(!comments.isEmpty()) {
+      for(Comment comment: comments){
+        if(comment.getReply() > 0){
+          List<Reply> replies = replyRepository.findByCommentId(comment.getId());
+          for(Reply reply: replies){
+            set.add(reply.getUser().getId());
+          }
+        }
+        set.add(comment.getUser().getId());
+      }
     }
 
     Optional<User> user = userRepository.findById(post.get().getUser().getId());
@@ -198,6 +219,7 @@ public class PostService extends CreatedAt {
         .isLike(likeUser.isPresent())
         .isPost(Objects.equals(user.get().getId(), post.get().getUser().getId()))
         .views(views)
+        .relatedUsers(set.size())
         .build();
   }
 

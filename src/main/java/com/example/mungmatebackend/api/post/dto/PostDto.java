@@ -65,6 +65,8 @@ public class PostDto {
     private Boolean isPost;
     @Schema(example = "13", description = "조회수")
     private Integer views;
+    @Schema(example = "5", description = "해당 게시글에 연관된 유저 수")
+    private Integer relatedUsers;
   }
 
   @Data
