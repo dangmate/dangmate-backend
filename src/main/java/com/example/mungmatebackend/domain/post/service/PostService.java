@@ -140,7 +140,7 @@ public class PostService extends CreatedAt {
       throw new BusinessException(ErrorCode.POST_NOT_FOUND);
     }
 
-    Optional<User> user = userRepository.findById(userId);
+    Optional<User> user = userRepository.findById(post.get().getUser().getId());
 
     String createdAt = getCreatedAt(post.get().getCreatedAt());
 
