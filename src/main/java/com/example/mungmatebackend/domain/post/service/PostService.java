@@ -17,7 +17,6 @@ import com.example.mungmatebackend.domain.user.entity.User;
 import com.example.mungmatebackend.domain.user.repository.UserRepository;
 import com.example.mungmatebackend.global.error.ErrorCode;
 import com.example.mungmatebackend.global.error.exception.BusinessException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -76,13 +75,103 @@ public class PostService extends CreatedAt {
         .build();
   }
 
+  private PostsDto.GetPostsResponse getAllListWithoutPostId(
+      Long size,
+      PostsDto.GetPostsRequest request,
+      Long firstPostId
+  ) {
+    List<Post> posts = postRepository.findAllListWithoutPostIdNative(size, request.getLocation());
+    List<PostGetResponse> postGetResponses = new ArrayList<>();
+
+    for (Post post : posts) {
+      Optional<LikeUser> likeUser = likeUserRepository.findByPostIdAndUserId(post.getId(),
+          request.getUserId());
+
+      postGetResponses.add(PostGetResponse.builder()
+          .postId(post.getId())
+          .profile(post.getUser().getProfile())
+          .fullName(post.getUser().getFullName())
+          .category(post.getCategory())
+          .thumbnail(post.getThumbnail())
+          .content(post.getContent())
+          .location(post.getLocation())
+          .createdAt(getCreatedAt(post.getCreatedAt()))
+          .comments(post.getComments())
+          .likes(post.getLikes())
+          .isLike(likeUser.isPresent())
+          .isPost(Objects.equals(post.getUser().getId(), request.getUserId()))
+          .views(post.getViews())
+          .build());
+    }
+
+    return PostsDto.GetPostsResponse.builder()
+        .total(posts.size())
+        .posts(postGetResponses)
+        .location(request.getLocation())
+        .firstId(firstPostId)
+        .build();
+  }
+
+  private PostsDto.GetPostsResponse getByListWithoutPostId(
+      Long size,
+      PostsDto.GetPostsRequest request,
+      Long firstPostId
+  ) {
+    List<Post> posts = postRepository.findByListWithoutPostIdNative(size, request.getLocation(), request.getCategory());
+    List<PostGetResponse> postGetResponses = new ArrayList<>();
+
+    for (Post post : posts) {
+      Optional<LikeUser> likeUser = likeUserRepository.findByPostIdAndUserId(post.getId(),
+          request.getUserId());
+
+      postGetResponses.add(PostGetResponse.builder()
+          .postId(post.getId())
+          .profile(post.getUser().getProfile())
+          .fullName(post.getUser().getFullName())
+          .category(post.getCategory())
+          .thumbnail(post.getThumbnail())
+          .content(post.getContent())
+          .location(post.getLocation())
+          .createdAt(getCreatedAt(post.getCreatedAt()))
+          .comments(post.getComments())
+          .likes(post.getLikes())
+          .isLike(likeUser.isPresent())
+          .isPost(Objects.equals(post.getUser().getId(), request.getUserId()))
+          .views(post.getViews())
+          .build());
+    }
+
+    return PostsDto.GetPostsResponse.builder()
+        .total(posts.size())
+        .posts(postGetResponses)
+        .location(request.getLocation())
+        .firstId(firstPostId)
+        .build();
+  }
+
   public PostsDto.GetPostsResponse getPosts(
       Long size,
       Long lastPostId,
       PostsDto.GetPostsRequest request
   ) {
-
+    Optional<Post> firstPost = postRepository.findTopByIsActive(true);
     String category = request.getCategory();
+
+    if(firstPost.isEmpty()){
+      return PostsDto.GetPostsResponse.builder()
+          .total(0)
+          .posts(new ArrayList<>())
+          .location(request.getLocation())
+          .firstId(0L)
+          .build();
+    }
+
+    if(lastPostId == null){
+      if(category.equals("all")){
+        return getAllListWithoutPostId(size,request, firstPost.get().getId());
+      }
+      return getByListWithoutPostId(size, request, firstPost.get().getId());
+    }
 
     if (category.equals("all")) {
       return getAllList(size, lastPostId, request);
@@ -117,6 +206,7 @@ public class PostService extends CreatedAt {
         .total(posts.size())
         .posts(postGetResponses)
         .location(request.getLocation())
+        .firstId(firstPost.get().getId())
         .build();
   }
 
@@ -124,7 +214,48 @@ public class PostService extends CreatedAt {
       Long size,
       Long lastPostId
   ) {
-    List<Post> posts = postRepository.findAll(Sort.by(Direction.DESC,"id"));
+    Optional<Post> firstPost = postRepository.findTopByIsActive(true);
+
+    if(lastPostId == null){
+      List<Post> posts = postRepository.findAll(size);
+      List<PostGetResponse> postGetResponses = new ArrayList<>();
+      for (Post post : posts) {
+
+        postGetResponses.add(PostGetResponse.builder()
+            .postId(post.getId())
+            .profile(post.getUser().getProfile())
+            .fullName(post.getUser().getFullName())
+            .category(post.getCategory())
+            .thumbnail(post.getThumbnail())
+            .content(post.getContent())
+            .location(post.getLocation())
+            .createdAt(getCreatedAt(post.getCreatedAt()))
+            .comments(post.getComments())
+            .likes(post.getLikes())
+            .isLike(false)
+            .isPost(false)
+            .views(post.getViews())
+            .build());
+      }
+
+      return PostsDto.GetPostsResponse.builder()
+          .total(posts.size())
+          .posts(postGetResponses)
+          .location(null)
+          .firstId(firstPost.get().getId())
+          .build();
+    }
+
+    if(firstPost.isEmpty()){
+      return PostsDto.GetPostsResponse.builder()
+          .total(0)
+          .posts(new ArrayList<>())
+          .location(null)
+          .firstId(0L)
+          .build();
+    }
+
+    List<Post> posts = postRepository.findAll(size, lastPostId);
     List<PostGetResponse> postGetResponses = new ArrayList<>();
     for (Post post : posts) {
 
@@ -149,6 +280,7 @@ public class PostService extends CreatedAt {
         .total(posts.size())
         .posts(postGetResponses)
         .location(null)
+        .firstId(firstPost.get().getId())
         .build();
   }
 

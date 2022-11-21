@@ -33,6 +33,8 @@ public class PostsDto {
     private List<PostGetResponse> posts;
     @Schema(example = "34", description = "총 게시글 갯수")
     private Integer total;
+    @Schema(example = "1", description = "첫 게시글 id")
+    private Long firstId;
   }
 
 }

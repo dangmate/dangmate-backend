@@ -1,8 +1,10 @@
 package com.example.mungmatebackend.api.post.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
@@ -79,6 +81,8 @@ public class CommentDto {
   }
 
   @Data
+  @NoArgsConstructor
+  @AllArgsConstructor
   @Builder
   public static class CommentDeleteRequest {
     @Schema(example = "1", description = "유저 id")
