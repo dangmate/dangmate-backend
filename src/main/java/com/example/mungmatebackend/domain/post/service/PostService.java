@@ -3,6 +3,7 @@ package com.example.mungmatebackend.domain.post.service;
 import com.example.mungmatebackend.api.post.dto.PostDto;
 import com.example.mungmatebackend.api.post.dto.PostDto.PostGetResponse;
 import com.example.mungmatebackend.api.posts.dto.PostsDto;
+import com.example.mungmatebackend.api.user.login.dto.UserDto;
 import com.example.mungmatebackend.domain.comment.entity.Comment;
 import com.example.mungmatebackend.domain.comment.repository.CommentRepository;
 import com.example.mungmatebackend.domain.common.CreatedAt;
@@ -301,6 +302,47 @@ public class PostService extends CreatedAt {
         .statusCode("200")
         .postId(post.getId())
         .build();
+  }
+
+  public UserDto.getMyPostsResponse getMyPosts(Long userId) {
+    List<Post> posts = postRepository.findAllByUserIdOrderByIdDesc(userId);
+    Optional<User> requestUser = userRepository.findById(userId);
+
+    if(requestUser.isEmpty()){
+      throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+    }
+
+    if(posts.size() == 0){
+      return UserDto.getMyPostsResponse.builder()
+              .userId(userId)
+              .build();
+    }
+
+    List<UserDto.getMyPostResponse> myPosts = new ArrayList<>();
+    for(Post post: posts){
+      Optional<User> user = userRepository.findById(post.getUser().getId());
+      String createdAt = getCreatedAt(post.getCreatedAt());
+      Optional<LikeUser> likeUser = likeUserRepository.findByPostIdAndUserId(post.getId(),
+              user.get().getId());
+      myPosts.add(UserDto.getMyPostResponse.builder()
+              .postId(post.getId())
+              .profile(user.get().getProfile())
+              .fullName(user.get().getFullName())
+              .category(post.getCategory())
+              .thumbnail(post.getThumbnail())
+              .content(post.getContent())
+              .location(post.getLocation())
+              .createdAt(createdAt)
+              .comments(post.getComments())
+              .likes(post.getLikes())
+              .isLike(likeUser.isPresent())
+              .build());
+    }
+
+    return UserDto.getMyPostsResponse.builder()
+            .userId(userId)
+            .posts(myPosts)
+            .build();
   }
 
   public PostDto.PostGetResponse getPost(Long postId, Long userId) {
