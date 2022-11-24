@@ -1,7 +1,8 @@
 package com.example.mungmatebackend.api.user.login.controller;
 
-import com.example.mungmatebackend.api.post.dto.PostDto;
+import com.example.mungmatebackend.api.post.dto.CommentsDto;
 import com.example.mungmatebackend.api.user.login.dto.UserDto;
+import com.example.mungmatebackend.domain.comment.service.CommentService;
 import com.example.mungmatebackend.domain.post.service.PostService;
 import com.example.mungmatebackend.global.error.dto.ErrorRes;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,10 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
@@ -25,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final PostService postService;
+    private final CommentService commentService;
 
     @Operation(summary = "내가 쓴 게시글 조회 API")
     @ApiResponses(value = {
@@ -32,6 +31,11 @@ public class UserController {
                     responseCode = "200",
                     description = "게시글 조회 성공",
                     content = @Content(schema = @Schema(implementation = UserDto.getMyPostsResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "존재 하지 않는 유저",
+                    content = @Content(schema = @Schema(implementation = ErrorRes.class))
             ),
             @ApiResponse(
                     responseCode = "500",
@@ -45,4 +49,62 @@ public class UserController {
             @PathVariable Long userId) {
         return ResponseEntity.ok(postService.getMyPosts(userId));
     }
+
+
+    @Operation(summary = "내가 쓴 댓글 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "댓글 조회 성공",
+                    content = @Content(schema = @Schema(implementation = UserDto.getMyCommentsResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "존재 하지 않는 유저",
+                    content = @Content(schema = @Schema(implementation = ErrorRes.class))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "댓글 조회 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorRes.class))
+            ),
+    })
+    @GetMapping("/{userId}/comments")
+    public ResponseEntity<UserDto.getMyCommentsResponse> getMyComments(
+            @Parameter(name = "userId", description = "유저 id")
+            @RequestParam Long userId
+    ){
+        return ResponseEntity.ok(commentService.getMyComments(userId));
+    }
+
+    @Operation(summary = "관심 목록 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "관심 목록 조회 성공",
+                    content = @Content(schema = @Schema(implementation = UserDto.getMyCommentsResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "존재 하지 않는 유저",
+                    content = @Content(schema = @Schema(implementation = ErrorRes.class))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "관심 목록 조회 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorRes.class))
+            ),
+    })
+    @GetMapping("/{userId}/likes")
+    public ResponseEntity<UserDto.getMyLikesResponse> getMyLikes(
+            @Parameter(name = "userId", description = "유저 id")
+            @PathVariable
+            @Parameter(name = "userId", description = "유저 id")
+            @RequestParam Long userId,
+    ){
+
+    }
+
+
+
 }

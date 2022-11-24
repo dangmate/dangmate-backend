@@ -3,6 +3,7 @@ package com.example.mungmatebackend.domain.comment.service;
 import com.example.mungmatebackend.api.post.dto.CommentsDto;
 import com.example.mungmatebackend.api.post.dto.CommentDto;
 import com.example.mungmatebackend.api.post.dto.CommentDto.CommentGetResponse;
+import com.example.mungmatebackend.api.user.login.dto.UserDto;
 import com.example.mungmatebackend.domain.comment.entity.Comment;
 import com.example.mungmatebackend.domain.comment.repository.CommentRepository;
 import com.example.mungmatebackend.domain.common.CreatedAt;
@@ -83,6 +84,39 @@ public class CommentService extends CreatedAt {
     commentRepository.save(comment.get());
 
     return CommentDto.CommentPutResponse.builder().build();
+  }
+  public UserDto.getMyCommentsResponse getMyComments(Long userId) {
+
+    List<Comment> comments = commentRepository.findByUserIdOrderByIdDesc(userId);
+    Optional<User> user = userRepository.findById(userId);
+
+    if(user.isEmpty()){
+      throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+    }
+
+    if (comments == null || comments.isEmpty()) {
+      return UserDto.getMyCommentsResponse.builder()
+              .build();
+    }
+
+    List<UserDto.getMyCommentResponse> myComments = new ArrayList<>();
+
+    for (Comment comment : comments) {
+      String createdAt = getCreatedAt(comment.getCreatedAt());
+
+      myComments.add(UserDto.getMyCommentResponse.builder()
+              .commentId(comment.getId())
+              .profile(user.get().getProfile())
+              .fullName(user.get().getFullName())
+              .createdAt(createdAt)
+              .content(comment.getContent())
+              .reply(comment.getReply())
+              .build());
+    }
+
+    return UserDto.getMyCommentsResponse.builder()
+            .comments(myComments)
+            .build();
   }
 
   public CommentsDto.CommentsGetResponse getComments(Long postId, Long userId) {
