@@ -1,5 +1,6 @@
 package com.example.mungmatebackend.domain.user.service;
 
+import com.example.mungmatebackend.api.user.login.dto.UserDto;
 import com.example.mungmatebackend.api.user.login.dto.request.UserLoginReq;
 import com.example.mungmatebackend.api.user.login.dto.response.UserLoginRes;
 import com.example.mungmatebackend.api.user.signin.dto.request.UserEmailReq;
@@ -8,6 +9,10 @@ import com.example.mungmatebackend.api.user.signin.dto.request.UserSigninReq;
 import com.example.mungmatebackend.api.user.signin.dto.response.UserEmailRes;
 import com.example.mungmatebackend.api.user.signin.dto.response.UserFullNameRes;
 import com.example.mungmatebackend.api.user.signin.dto.response.UserSigninRes;
+import com.example.mungmatebackend.domain.comment.entity.Comment;
+import com.example.mungmatebackend.domain.comment.repository.CommentRepository;
+import com.example.mungmatebackend.domain.post.entity.Post;
+import com.example.mungmatebackend.domain.post.repository.PostRepository;
 import com.example.mungmatebackend.domain.user.entity.User;
 import com.example.mungmatebackend.domain.user.repository.UserRepository;
 import com.example.mungmatebackend.global.error.ErrorCode;
@@ -16,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,6 +30,8 @@ public class UserService {
 
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
+  private final PostRepository postRepository;
+  private final CommentRepository commentRepository;
 
   public UserLoginRes login(UserLoginReq userLoginReq){
     Optional<User> user = userRepository.findByEmail(userLoginReq.getEmail());
@@ -87,6 +95,26 @@ public class UserService {
     return UserFullNameRes.builder()
             .statusCode("200")
             .fullName(userFullNameReq.getFullName())
+            .build();
+  }
+
+  public UserDto.getProfileResponse getProfile(Long userId){
+    Optional<User> user = userRepository.findById(userId);
+    List<Post> posts =  postRepository.findAllByUserIdAndIsActiveOrderByIdDesc(userId, true);
+    List<Comment> comments = commentRepository.findByUserIdOrderByIdDesc(userId);
+    user.get().getLocation()
+    if(user.isEmpty()){
+      throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+    }
+
+    return UserDto.getProfileResponse.builder()
+            .userId(userId)
+            .profile(user.get().getProfile())
+            .fullName(user.get().getFullName())
+            .posts(posts.size())
+            .comments(comments.size())
+            .location(user.get().getLocation())
+            .users()
             .build();
   }
 

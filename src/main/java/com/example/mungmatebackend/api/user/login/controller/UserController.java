@@ -4,6 +4,7 @@ import com.example.mungmatebackend.api.post.dto.CommentsDto;
 import com.example.mungmatebackend.api.user.login.dto.UserDto;
 import com.example.mungmatebackend.domain.comment.service.CommentService;
 import com.example.mungmatebackend.domain.post.service.PostService;
+import com.example.mungmatebackend.domain.user.service.UserService;
 import com.example.mungmatebackend.global.error.dto.ErrorRes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,6 +25,7 @@ public class UserController {
 
     private final PostService postService;
     private final CommentService commentService;
+private final UserService userService;
 
     @Operation(summary = "내가 쓴 게시글 조회 API")
     @ApiResponses(value = {
@@ -72,7 +74,7 @@ public class UserController {
     @GetMapping("/{userId}/comments")
     public ResponseEntity<UserDto.getMyCommentsResponse> getMyComments(
             @Parameter(name = "userId", description = "유저 id")
-            @RequestParam Long userId
+            @PathVariable Long userId
     ){
         return ResponseEntity.ok(commentService.getMyComments(userId));
     }
@@ -98,13 +100,37 @@ public class UserController {
     @GetMapping("/{userId}/likes")
     public ResponseEntity<UserDto.getMyLikesResponse> getMyLikes(
             @Parameter(name = "userId", description = "유저 id")
-            @PathVariable
-            @Parameter(name = "userId", description = "유저 id")
-            @RequestParam Long userId,
+            @PathVariable Long userId,
+            @Parameter(name = "category", description = "'all', '산책 메이트', '댕댕 이야기' 중 1개")
+            @RequestParam String category
     ){
-
+        return ResponseEntity.ok(postService.getMyLikes(userId, category));
     }
 
-
+    @Operation(summary = "유저 조회(프로필) API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "유저 조회 성공",
+                    content = @Content(schema = @Schema(implementation = UserDto.getMyCommentsResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "존재 하지 않는 유저",
+                    content = @Content(schema = @Schema(implementation = ErrorRes.class))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "유저 조회 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorRes.class))
+            ),
+    })
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDto.getProfileResponse> getProfile(
+            @Parameter(name = "userId", description = "유저 id")
+            @PathVariable Long userId,
+    ){
+        return ResponseEntity.ok(userService.getProfile(userId));
+    }
 
 }

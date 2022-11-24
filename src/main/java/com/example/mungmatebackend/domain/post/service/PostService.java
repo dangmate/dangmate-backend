@@ -211,6 +211,69 @@ public class PostService extends CreatedAt {
         .build();
   }
 
+  private void addPostsByCategory(
+          Optional<User> user,
+          List<UserDto.getMyLikeResponse> posts,
+          Optional<Post> post
+          ){
+    String createdAt = getCreatedAt(post.get().getCreatedAt());
+    posts.add(
+            UserDto.getMyLikeResponse.builder()
+                    .postId(post.get().getId())
+                    .profile(user.get().getProfile())
+                    .fullName(user.get().getFullName())
+                    .category(post.get().getCategory())
+                    .thumbnail(post.get().getThumbnail())
+                    .content(post.get().getContent())
+                    .location(post.get().getLocation())
+                    .createdAt(createdAt)
+                    .comments(post.get().getComments())
+                    .likes(post.get().getLikes())
+                    .build()
+    );
+  }
+
+  public UserDto.getMyLikesResponse getMyLikes(
+          Long userId,
+          String category
+  ) {
+
+    List<LikeUser> likeUsers = likeUserRepository.findByUserId(userId);
+    Optional<User> user = userRepository.findById(userId);
+
+    if(user.isEmpty()){
+      throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+    }
+
+    if(likeUsers.isEmpty()){
+      return UserDto.getMyLikesResponse.builder().build();
+    }
+
+    List<UserDto.getMyLikeResponse> posts = new ArrayList<>();
+    for(LikeUser likeUser: likeUsers){
+      Optional<Post> post = postRepository.findByIdAndIsActiveOrderByIdDesc(
+              likeUser.getPost().getId(),
+      true
+      );
+
+      if(post.isEmpty()){
+        continue;
+      }
+
+      if(category.equals("all")){
+        addPostsByCategory(user,posts,post);
+        continue;
+      }
+
+      if(category.equals(post.get().getCategory())){
+        addPostsByCategory(user,posts,post);
+      }
+    }
+    return UserDto.getMyLikesResponse.builder()
+            .likes(posts)
+            .build();
+  }
+
   public PostsDto.GetPostsResponse getAllPosts(
       Long size,
       Long lastPostId
@@ -305,7 +368,7 @@ public class PostService extends CreatedAt {
   }
 
   public UserDto.getMyPostsResponse getMyPosts(Long userId) {
-    List<Post> posts = postRepository.findAllByUserIdOrderByIdDesc(userId);
+    List<Post> posts = postRepository.findAllByUserIdAndIsActiveOrderByIdDesc(userId,true);
     Optional<User> requestUser = userRepository.findById(userId);
 
     if(requestUser.isEmpty()){

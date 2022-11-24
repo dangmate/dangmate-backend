@@ -1,6 +1,5 @@
 package com.example.mungmatebackend.api.user.login.dto;
 
-import com.example.mungmatebackend.api.post.dto.CommentDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -96,8 +95,25 @@ public class UserDto {
         private Integer comments;
         @Schema(example = "0", description = "좋아요 갯수 / Integer")
         private Integer likes;
-        @Schema(example = "true", description = "내가 좋아요 눌렀는지 / Boolean")
-        private Boolean isLike;
+    }
+
+    @Data
+    @Builder
+    public static class getProfileResponse{
+        @Schema(example = "1")
+        private Long userId;
+        @Schema(example = "https://mungmate-bucket.s3.ap-northeast-2.amazonaws.com/AbCoikG9xH")
+        private String profile;
+        @Schema(example = "소심쟁이 제이")
+        private String fullName;
+        @Schema(example = "11")
+        private Integer posts;
+        @Schema(example = "26")
+        private Integer comments;
+        @Schema(example = "공덕동")
+        private String location;
+        @Schema(example = "489")
+        private Integer users;
     }
 
 }

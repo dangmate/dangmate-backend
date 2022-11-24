@@ -10,8 +10,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
+  Optional<Post> findByIdAndIsActiveOrderByIdDesc(Long postId, Boolean isActive);
   Optional<Post> findTopByIsActive(Boolean isActive);
-  List<Post> findAllByUserIdOrderByIdDesc(Long userId);
+  List<Post> findAllByUserIdAndIsActiveOrderByIdDesc(Long userId, Boolean isActive);
 
   @Query(value = "select * from post where id < :id and is_active = 1 and location = :location order by id desc limit :size",
       nativeQuery = true)
