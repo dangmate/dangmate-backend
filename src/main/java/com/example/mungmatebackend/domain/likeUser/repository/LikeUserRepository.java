@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface LikeUserRepository extends JpaRepository<LikeUser,Long> {
+
   Optional<LikeUser> findByPostIdAndUserId(Long postId, Long userId);
   @Transactional
   Optional<LikeUser> deleteByPostIdAndUserId(Long postId, Long userId);

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-
+  List<Post> findByUserId(Long userId);
   Optional<Post> findByIdAndIsActiveOrderByIdDesc(Long postId, Boolean isActive);
   Optional<Post> findTopByIsActive(Boolean isActive);
   List<Post> findAllByUserIdAndIsActiveOrderByIdDesc(Long userId, Boolean isActive);

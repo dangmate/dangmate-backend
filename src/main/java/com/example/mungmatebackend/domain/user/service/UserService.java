@@ -1,6 +1,7 @@
 package com.example.mungmatebackend.domain.user.service;
 
 import com.example.mungmatebackend.api.user.login.dto.UserDto;
+import com.example.mungmatebackend.api.user.login.dto.UserDto.deleteProfileResponse;
 import com.example.mungmatebackend.api.user.login.dto.request.UserLoginReq;
 import com.example.mungmatebackend.api.user.login.dto.response.UserLoginRes;
 import com.example.mungmatebackend.api.user.signin.dto.request.UserEmailReq;
@@ -11,8 +12,12 @@ import com.example.mungmatebackend.api.user.signin.dto.response.UserFullNameRes;
 import com.example.mungmatebackend.api.user.signin.dto.response.UserSigninRes;
 import com.example.mungmatebackend.domain.comment.entity.Comment;
 import com.example.mungmatebackend.domain.comment.repository.CommentRepository;
+import com.example.mungmatebackend.domain.likeUser.entity.LikeUser;
+import com.example.mungmatebackend.domain.likeUser.repository.LikeUserRepository;
 import com.example.mungmatebackend.domain.post.entity.Post;
 import com.example.mungmatebackend.domain.post.repository.PostRepository;
+import com.example.mungmatebackend.domain.reply.entity.Reply;
+import com.example.mungmatebackend.domain.reply.repository.ReplyRepository;
 import com.example.mungmatebackend.domain.user.entity.User;
 import com.example.mungmatebackend.domain.user.repository.UserRepository;
 import com.example.mungmatebackend.global.error.ErrorCode;
@@ -34,7 +39,8 @@ public class UserService {
   private final UserRepository userRepository;
   private final PostRepository postRepository;
   private final CommentRepository commentRepository;
-
+  private final ReplyRepository replyRepository;
+  private final LikeUserRepository likeUserRepository;
   public UserLoginRes login(UserLoginReq userLoginReq){
     Optional<User> user = userRepository.findByEmail(userLoginReq.getEmail());
 
@@ -151,7 +157,42 @@ public class UserService {
         .profile(request.getProfile())
         .fullName(request.getFullName())
         .build();
+  }
 
+  public UserDto.deleteProfileResponse deleteProfile(Long userId){
+
+    Optional<User> user = userRepository.findById(userId);
+    List<LikeUser> likeUsers = likeUserRepository.findByUserId(userId);
+    List<Reply> replies = replyRepository.findByUserId(userId);
+    List<Comment> comments = commentRepository.findByUserIdOrderByIdDesc(userId);
+    List<Post> posts = postRepository.findByUserId(userId);
+
+    if(user.isEmpty()){
+      throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+    }
+
+    for(LikeUser likeUser: likeUsers){
+      likeUserRepository.delete(likeUser);
+    }
+
+    for(Reply reply: replies){
+      replyRepository.delete(reply);
+    }
+
+    for(Comment comment: comments){
+      commentRepository.delete(comment);
+    }
+
+    for(Post post: posts){
+      postRepository.delete(post);
+    }
+
+    userRepository.delete(user.get());
+
+    return deleteProfileResponse.builder()
+        .userId(userId)
+        .fullName(user.get().getFullName())
+        .build();
   }
 
 }

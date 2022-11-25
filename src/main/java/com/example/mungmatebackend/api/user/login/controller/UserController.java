@@ -165,4 +165,30 @@ public class UserController {
     return ResponseEntity.ok(userService.updateProfile(userId, request));
   }
 
+  @Operation(summary = "유저 삭제 API")
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "유저 삭제 성공",
+          content = @Content(schema = @Schema(implementation = UserDto.deleteProfileResponse.class))
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "존재 하지 않는 유저",
+          content = @Content(schema = @Schema(implementation = ErrorRes.class))
+      ),
+      @ApiResponse(
+          responseCode = "500",
+          description = "유저 업데이트 실패",
+          content = @Content(schema = @Schema(implementation = ErrorRes.class))
+      ),
+  })
+  @DeleteMapping("/{userId}")
+  public ResponseEntity<UserDto.deleteProfileResponse> deleteProfile(
+      @Parameter(name = "userId", description = "유저 id")
+      @PathVariable Long userId
+  ) {
+    return ResponseEntity.ok(userService.deleteProfile(userId));
+  }
+
 }

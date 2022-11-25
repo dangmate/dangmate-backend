@@ -134,4 +134,13 @@ public class UserDto {
         private String fullName;
     }
 
+    @Data
+    @Builder
+    public static class deleteProfileResponse{
+        @Schema(example = "1")
+        private Long userId;
+        @Schema(example = "소심쟁이 제이")
+        private String fullName;
+    }
+
 }
