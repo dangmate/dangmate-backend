@@ -102,7 +102,7 @@ public class UserService {
     Optional<User> user = userRepository.findById(userId);
     List<Post> posts =  postRepository.findAllByUserIdAndIsActiveOrderByIdDesc(userId, true);
     List<Comment> comments = commentRepository.findByUserIdOrderByIdDesc(userId);
-    user.get().getLocation()
+
     if(user.isEmpty()){
       throw new BusinessException(ErrorCode.USER_NOT_FOUND);
     }
@@ -114,7 +114,7 @@ public class UserService {
             .posts(posts.size())
             .comments(comments.size())
             .location(user.get().getLocation())
-            .users()
+            .users(userRepository.findByLocation(user.get().getLocation()).size())
             .build();
   }
 

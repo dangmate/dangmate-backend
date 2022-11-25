@@ -128,7 +128,7 @@ private final UserService userService;
     @GetMapping("/{userId}")
     public ResponseEntity<UserDto.getProfileResponse> getProfile(
             @Parameter(name = "userId", description = "유저 id")
-            @PathVariable Long userId,
+            @PathVariable Long userId
     ){
         return ResponseEntity.ok(userService.getProfile(userId));
     }
