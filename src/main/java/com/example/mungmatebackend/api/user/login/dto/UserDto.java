@@ -116,4 +116,22 @@ public class UserDto {
         private Integer users;
     }
 
+    @Data
+    @Builder
+    public static class updateProfileRequest{
+        @Schema(example = "https://mungmate-bucket.s3.ap-northeast-2.amazonaws.com/AbCoikG9xH")
+        private String profile;
+        @Schema(example = "소심쟁이 제이")
+        private String fullName;
+    }
+
+    @Data
+    @Builder
+    public static class updateProfileResponse{
+        @Schema(example = "https://mungmate-bucket.s3.ap-northeast-2.amazonaws.com/AbCoikG9xH")
+        private String profile;
+        @Schema(example = "소심쟁이 제이")
+        private String fullName;
+    }
+
 }

@@ -15,7 +15,9 @@ public enum ErrorCode {
     POST_USER_NOT_MATCH(HttpStatus.UNAUTHORIZED, "401", "해당 게시글의 소유자와 요청 유저가 일치하지 않습니다."),
     COMMENT_USER_NOT_MATCH(HttpStatus.UNAUTHORIZED, "401", "해당 댓글의 소유자와 요청 유저가 일치하지 않습니다."),
     REPLY_USER_NOT_MATCH(HttpStatus.UNAUTHORIZED, "401", "해당 답글(대댓글)의 소유자와 요청 유저가 일치하지 않습니다."),
-    REPLY_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 댓글의 답글은 존재하지 않습니다")
+    REPLY_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 댓글의 답글은 존재하지 않습니다"),
+
+    UPDATED_WITHIN_7_DAYS(HttpStatus.UNAUTHORIZED, "401", "7일 이내에 수정하였습니다");
     ;
 
     ErrorCode(HttpStatus httpStatus, String errorCode, String message) {

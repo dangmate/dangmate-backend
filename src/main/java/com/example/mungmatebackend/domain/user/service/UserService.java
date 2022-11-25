@@ -17,6 +17,8 @@ import com.example.mungmatebackend.domain.user.entity.User;
 import com.example.mungmatebackend.domain.user.repository.UserRepository;
 import com.example.mungmatebackend.global.error.ErrorCode;
 import com.example.mungmatebackend.global.error.exception.BusinessException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -116,6 +118,40 @@ public class UserService {
             .location(user.get().getLocation())
             .users(userRepository.findByLocation(user.get().getLocation()).size())
             .build();
+  }
+
+  private boolean isUpdatedNotAfter7Days(LocalDateTime pastTIme){
+    LocalDateTime currentTime = LocalDateTime.now();
+
+    if(ChronoUnit.DAYS.between(pastTIme, currentTime) <= 7){
+      return true;
+    }
+
+    return false;
+  }
+  public UserDto.updateProfileResponse updateProfile(
+      Long userId,
+      UserDto.updateProfileRequest request
+  ){
+    Optional<User> user = userRepository.findById(userId);
+
+    if(user.isEmpty()){
+      throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+    }
+
+    if(isUpdatedNotAfter7Days(user.get().getUpdatedAt())){
+      throw new BusinessException(ErrorCode.UPDATED_WITHIN_7_DAYS);
+    };
+
+    user.get().setProfile(request.getProfile());
+    user.get().setFullName(request.getFullName());
+    userRepository.save(user.get());
+
+    return UserDto.updateProfileResponse.builder()
+        .profile(request.getProfile())
+        .fullName(request.getFullName())
+        .build();
+
   }
 
 }
