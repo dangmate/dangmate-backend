@@ -70,9 +70,11 @@ public class PostsController {
       @Parameter(name = "size", description = "받아올 리스트의 개수", example = "5")
       @RequestParam Long size,
       @Parameter(name = "lastPostId", description = "마지막으로 본 게시글 id", example = "10")
-      @RequestParam(required = false) Long lastPostId
+      @RequestParam(required = false) Long lastPostId,
+      @Parameter(name = "category", description = "'all', '산책 메이트', '댕댕 이야기' 중 1개", example = "all")
+      @RequestParam String category
   ) {
-    return ResponseEntity.ok(postService.getAllPosts(size, lastPostId));
+    return ResponseEntity.ok(postService.getAllPosts(size, lastPostId, category));
   }
 
 }

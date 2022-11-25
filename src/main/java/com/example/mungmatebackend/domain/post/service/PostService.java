@@ -155,7 +155,12 @@ public class PostService extends CreatedAt {
       Long lastPostId,
       PostsDto.GetPostsRequest request
   ) {
-    Optional<Post> firstPost = postRepository.findTopByIsActive(true);
+    Optional<Post> firstPost;
+    if(request.getCategory().equals("all")) {
+      firstPost = postRepository.findTopByIsActive(true);
+    }else{
+      firstPost = postRepository.findTopByIsActiveAndCategory(true, request.getCategory());
+    }
     String category = request.getCategory();
 
     if(firstPost.isEmpty()){
@@ -276,12 +281,116 @@ public class PostService extends CreatedAt {
 
   public PostsDto.GetPostsResponse getAllPosts(
       Long size,
-      Long lastPostId
+      Long lastPostId,
+      String category
   ) {
-    Optional<Post> firstPost = postRepository.findTopByIsActive(true);
+    Optional<Post> firstPost;
+
+    if(category.equals("all")){
+      firstPost = postRepository.findTopByIsActive(true);
+    }else{
+      firstPost = postRepository.findTopByIsActiveAndCategory(true, category);
+    }
 
     if(lastPostId == null){
-      List<Post> posts = postRepository.findAll(size);
+      if(category.equals("all")){
+        List<Post> posts = postRepository.findAll(size);
+        List<PostGetResponse> postGetResponses = new ArrayList<>();
+
+        for (Post post : posts) {
+          postGetResponses.add(PostGetResponse.builder()
+              .postId(post.getId())
+              .profile(post.getUser().getProfile())
+              .fullName(post.getUser().getFullName())
+              .category(post.getCategory())
+              .thumbnail(post.getThumbnail())
+              .content(post.getContent())
+              .location(post.getLocation())
+              .createdAt(getCreatedAt(post.getCreatedAt()))
+              .comments(post.getComments())
+              .likes(post.getLikes())
+              .isLike(false)
+              .isPost(false)
+              .views(post.getViews())
+              .build());
+        }
+
+        return PostsDto.GetPostsResponse.builder()
+            .total(posts.size())
+            .posts(postGetResponses)
+            .location(null)
+            .firstId(firstPost.get().getId())
+            .build();
+      }else {
+        List<Post> posts = postRepository.findAll(size, category);
+        List<PostGetResponse> postGetResponses = new ArrayList<>();
+
+        for (Post post : posts) {
+          postGetResponses.add(PostGetResponse.builder()
+              .postId(post.getId())
+              .profile(post.getUser().getProfile())
+              .fullName(post.getUser().getFullName())
+              .category(post.getCategory())
+              .thumbnail(post.getThumbnail())
+              .content(post.getContent())
+              .location(post.getLocation())
+              .createdAt(getCreatedAt(post.getCreatedAt()))
+              .comments(post.getComments())
+              .likes(post.getLikes())
+              .isLike(false)
+              .isPost(false)
+              .views(post.getViews())
+              .build());
+        }
+
+        return PostsDto.GetPostsResponse.builder()
+            .total(posts.size())
+            .posts(postGetResponses)
+            .location(null)
+            .firstId(firstPost.get().getId())
+            .build();
+      }
+    }
+
+    if(firstPost.isEmpty()){
+      return PostsDto.GetPostsResponse.builder()
+          .total(0)
+          .posts(new ArrayList<>())
+          .location(null)
+          .firstId(0L)
+          .build();
+    }
+
+    if(category.equals("all")){
+      List<Post> posts = postRepository.findAll(size, lastPostId);
+      List<PostGetResponse> postGetResponses = new ArrayList<>();
+      for (Post post : posts) {
+
+        postGetResponses.add(PostGetResponse.builder()
+            .postId(post.getId())
+            .profile(post.getUser().getProfile())
+            .fullName(post.getUser().getFullName())
+            .category(post.getCategory())
+            .thumbnail(post.getThumbnail())
+            .content(post.getContent())
+            .location(post.getLocation())
+            .createdAt(getCreatedAt(post.getCreatedAt()))
+            .comments(post.getComments())
+            .likes(post.getLikes())
+            .isLike(false)
+            .isPost(false)
+            .views(post.getViews())
+            .build());
+      }
+
+      return PostsDto.GetPostsResponse.builder()
+          .total(posts.size())
+          .posts(postGetResponses)
+          .location(null)
+          .firstId(firstPost.get().getId())
+          .build();
+    }else{
+      List<Post> posts = postRepository.findAll(size, lastPostId, category);
       List<PostGetResponse> postGetResponses = new ArrayList<>();
       for (Post post : posts) {
 
@@ -310,42 +419,6 @@ public class PostService extends CreatedAt {
           .build();
     }
 
-    if(firstPost.isEmpty()){
-      return PostsDto.GetPostsResponse.builder()
-          .total(0)
-          .posts(new ArrayList<>())
-          .location(null)
-          .firstId(0L)
-          .build();
-    }
-
-    List<Post> posts = postRepository.findAll(size, lastPostId);
-    List<PostGetResponse> postGetResponses = new ArrayList<>();
-    for (Post post : posts) {
-
-      postGetResponses.add(PostGetResponse.builder()
-          .postId(post.getId())
-          .profile(post.getUser().getProfile())
-          .fullName(post.getUser().getFullName())
-          .category(post.getCategory())
-          .thumbnail(post.getThumbnail())
-          .content(post.getContent())
-          .location(post.getLocation())
-          .createdAt(getCreatedAt(post.getCreatedAt()))
-          .comments(post.getComments())
-          .likes(post.getLikes())
-          .isLike(false)
-          .isPost(false)
-          .views(post.getViews())
-          .build());
-    }
-
-    return PostsDto.GetPostsResponse.builder()
-        .total(posts.size())
-        .posts(postGetResponses)
-        .location(null)
-        .firstId(firstPost.get().getId())
-        .build();
   }
 
   public com.example.mungmatebackend.api.post.dto.PostDto.PostUploadResponse uploadPost(
