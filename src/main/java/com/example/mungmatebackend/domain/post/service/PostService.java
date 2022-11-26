@@ -548,7 +548,7 @@ public class PostService extends CreatedAt {
       throw new BusinessException(ErrorCode.POST_USER_NOT_MATCH);
     }
 
-    if (!Objects.equals(request.getThumbnail(), post.get().getThumbnail())) {
+    if (!Objects.equals(request.getThumbnail(), post.get().getThumbnail()) && post.get().getThumbnail() != null) {
       galleryService.deleteImage(post.get().getThumbnail());
     }
 
