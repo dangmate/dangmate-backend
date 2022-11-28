@@ -95,6 +95,8 @@ public class UserDto {
         private Integer comments;
         @Schema(example = "0", description = "좋아요 갯수 / Integer")
         private Integer likes;
+        @Schema(example = "true", description = "내가 좋아요 눌렀는지")
+        private Boolean isLike;
     }
 
     @Data

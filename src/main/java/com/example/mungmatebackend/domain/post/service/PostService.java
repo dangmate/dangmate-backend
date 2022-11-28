@@ -234,6 +234,7 @@ public class PostService extends CreatedAt {
                     .createdAt(createdAt)
                     .comments(post.get().getComments())
                     .likes(post.get().getLikes())
+                    .isLike(true)
                     .build()
     );
   }
@@ -503,7 +504,7 @@ public class PostService extends CreatedAt {
       }
     }
 
-    Optional<User> user = userRepository.findById(post.get().getUser().getId());
+    Optional<User> user = userRepository.findById(userId);
 
     String createdAt = getCreatedAt(post.get().getCreatedAt());
 
