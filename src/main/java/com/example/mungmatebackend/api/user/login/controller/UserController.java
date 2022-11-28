@@ -191,11 +191,11 @@ public class UserController {
         return ResponseEntity.ok(userService.updateCheckProfile(userId));
     }
 
-    @Operation(summary = "유저 삭제 API")
+    @Operation(summary = "유저 탈퇴 API")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "유저 삭제 성공",
+                    description = "유저 탈퇴 성공",
                     content = @Content(schema = @Schema(implementation = UserDto.deleteProfileResponse.class))
             ),
             @ApiResponse(

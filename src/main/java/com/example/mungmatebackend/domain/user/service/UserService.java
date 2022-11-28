@@ -200,6 +200,9 @@ public class UserService {
 
     for(LikeUser likeUser: likeUsers){
       likeUserRepository.delete(likeUser);
+      Optional<Post> post = postRepository.findById(likeUser.getPost().getId());
+      post.get().setLikes(post.get().getLikes() - 1);
+      postRepository.save(post.get());
     }
 
     for(Reply reply: replies){
@@ -207,7 +210,19 @@ public class UserService {
     }
 
     for(Comment comment: comments){
+      if(comment.getReply()>0){
+        List<Reply> commentReplies = replyRepository.findByCommentId(comment.getId());
+        for(Reply reply: commentReplies){
+          replyRepository.delete(reply);
+          Optional<Post> post = postRepository.findById(reply.getPost().getId());
+          post.get().setComments(post.get().getComments() -1 );
+          postRepository.save(post.get());
+        }
+      }
       commentRepository.delete(comment);
+      Optional<Post> post = postRepository.findById(comment.getPost().getId());
+      post.get().setComments(post.get().getComments() -1 );
+      postRepository.save(post.get());
     }
 
     for(Post post: posts){
