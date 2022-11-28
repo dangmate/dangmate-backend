@@ -138,6 +138,13 @@ public class UserDto {
 
     @Data
     @Builder
+    public static class updateCheckProfileResponse{
+        @Schema(example = "true", description = "true: 업데이트 가능, false: 업데이트 불가능")
+        private Boolean canBeUpdated;
+    }
+
+    @Data
+    @Builder
     public static class deleteProfileResponse{
         @Schema(example = "1")
         private Long userId;

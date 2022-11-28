@@ -147,7 +147,7 @@ public class UserService {
 
     if(isUpdatedNotAfter7Days(user.get().getUpdatedAt())){
       throw new BusinessException(ErrorCode.UPDATED_WITHIN_7_DAYS);
-    };
+    }
 
     user.get().setProfile(request.getProfile());
     user.get().setFullName(request.getFullName());
@@ -157,6 +157,31 @@ public class UserService {
         .profile(request.getProfile())
         .fullName(request.getFullName())
         .build();
+  }
+
+  public UserDto.updateCheckProfileResponse updateCheckProfile(Long userId){
+    Optional<User> user = userRepository.findById(userId);
+
+    if(user.isEmpty()){
+      throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+    }
+
+    if(user.get().getCreatedAt().equals(user.get().getUpdatedAt())){
+      return UserDto.updateCheckProfileResponse.builder()
+              .canBeUpdated(true)
+              .build();
+    }
+
+    if(isUpdatedNotAfter7Days(user.get().getUpdatedAt())){
+      return UserDto.updateCheckProfileResponse.builder()
+              .canBeUpdated(false)
+              .build();
+    }
+
+    return UserDto.updateCheckProfileResponse.builder()
+            .canBeUpdated(true)
+            .build();
+
   }
 
   public UserDto.deleteProfileResponse deleteProfile(Long userId){
