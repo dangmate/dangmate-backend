@@ -145,7 +145,9 @@ public class UserService {
       throw new BusinessException(ErrorCode.USER_NOT_FOUND);
     }
 
-    if(isUpdatedNotAfter7Days(user.get().getUpdatedAt())){
+    if(isUpdatedNotAfter7Days(user.get().getUpdatedAt())
+      && !user.get().getCreatedAt().equals(user.get().getUpdatedAt())
+    ){
       throw new BusinessException(ErrorCode.UPDATED_WITHIN_7_DAYS);
     }
 
