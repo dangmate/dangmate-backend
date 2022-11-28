@@ -38,6 +38,9 @@ public class Comment extends BaseEntity {
   @ColumnDefault("0")
   private Integer reply;
 
+  @ColumnDefault("true")
+  private Boolean isActive;
+
   @ManyToOne
   @JoinColumn(name = "post_id")
   private Post post;

@@ -78,6 +78,8 @@ public class CommentDto {
     private Integer reply;
     @Schema(example = "true", description = "댓글 작성 여부")
     private Boolean isComment;
+    @Schema(example = "true", description = "댓글 Active 여부")
+    private Boolean isActive;
   }
 
   @Data

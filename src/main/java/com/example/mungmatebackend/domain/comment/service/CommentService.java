@@ -170,8 +170,14 @@ public class CommentService extends CreatedAt {
       throw new BusinessException(ErrorCode.COMMENT_USER_NOT_MATCH);
     }
 
-    commentRepository.deleteById(commentId);
-    post.get().setComments(post.get().getComments() - 1);
+    if(comment.get().getReply() > 0){
+      comment.get().setIsActive(false);
+      commentRepository.save(comment.get());
+    }else{
+      commentRepository.deleteById(commentId);
+      post.get().setComments(post.get().getComments() - 1);
+      postRepository.save(post.get());
+    }
 
     return CommentDto.CommentDeleteResponse.builder()
         .statusCode("200")
