@@ -484,6 +484,7 @@ public class PostService extends CreatedAt {
 
   public PostDto.PostGetResponse getPost(Long postId, Long userId) {
     Optional<Post> post = postRepository.findById(postId);
+    Optional<User> postUser = userRepository.findById(post.get().getUser().getId());
     List<Comment> comments = commentRepository.findByPostId(postId);
 
     if (post.isEmpty()) {
@@ -519,7 +520,7 @@ public class PostService extends CreatedAt {
     return PostDto.PostGetResponse.builder()
         .postId(postId)
         .profile(user.get().getProfile())
-        .fullName(user.get().getFullName())
+        .fullName(postUser.get().getFullName())
         .category(post.get().getCategory())
         .thumbnail(post.get().getThumbnail())
         .content(post.get().getContent())
