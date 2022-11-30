@@ -519,7 +519,7 @@ public class PostService extends CreatedAt {
 
     return PostDto.PostGetResponse.builder()
         .postId(postId)
-        .profile(user.get().getProfile())
+        .profile(postUser.get().getProfile())
         .fullName(postUser.get().getFullName())
         .category(post.get().getCategory())
         .thumbnail(post.get().getThumbnail())
