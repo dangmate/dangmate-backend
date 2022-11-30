@@ -43,7 +43,8 @@ public class PostService extends CreatedAt {
   private PostsDto.GetPostsResponse getAllList(
       Long size,
       Long lastPostId,
-      PostsDto.GetPostsRequest request
+      PostsDto.GetPostsRequest request,
+      Long firstId
   ) {
     List<Post> posts = postRepository.findAllListNative(size, lastPostId, request.getLocation());
     List<PostGetResponse> postGetResponses = new ArrayList<>();
@@ -73,6 +74,7 @@ public class PostService extends CreatedAt {
         .total(posts.size())
         .posts(postGetResponses)
         .location(request.getLocation())
+        .firstId(firstId)
         .build();
   }
 
@@ -157,9 +159,11 @@ public class PostService extends CreatedAt {
   ) {
     Optional<Post> firstPost;
     if(request.getCategory().equals("all")) {
-      firstPost = postRepository.findTopByIsActive(true);
+      firstPost = postRepository.findTopByIsActiveAndLocation(true, request.getLocation());
+      System.out.println("qwer1234");
+      System.out.println(firstPost.get().getId());
     }else{
-      firstPost = postRepository.findTopByIsActiveAndCategory(true, request.getCategory());
+      firstPost = postRepository.findTopByIsActiveAndCategoryAndLocation(true, request.getCategory(), request.getLocation());
     }
     String category = request.getCategory();
 
@@ -180,7 +184,7 @@ public class PostService extends CreatedAt {
     }
 
     if (category.equals("all")) {
-      return getAllList(size, lastPostId, request);
+      return getAllList(size, lastPostId, request, firstPost.get().getId());
     }
 
     List<Post> posts = postRepository.findByListNative(size, lastPostId, request.getLocation(),

@@ -142,6 +142,7 @@ public class CommentService extends CreatedAt {
           .content(comment.getContent())
           .reply(comment.getReply())
           .isComment(Objects.equals(comment.getUser().getId(), userId))
+          .isActive(comment.getIsActive())
           .build());
     }
 

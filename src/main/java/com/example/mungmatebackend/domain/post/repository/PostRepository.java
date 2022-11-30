@@ -13,6 +13,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
   Optional<Post> findByIdAndIsActiveOrderByIdDesc(Long postId, Boolean isActive);
   Optional<Post> findTopByIsActive(Boolean isActive);
   Optional<Post> findTopByIsActiveAndCategory(Boolean isActive, String category);
+  Optional<Post> findTopByIsActiveAndLocation(Boolean isActive, String location);
+  Optional<Post> findTopByIsActiveAndCategoryAndLocation(Boolean isActive, String category, String location);
   List<Post> findAllByUserIdAndIsActiveOrderByIdDesc(Long userId, Boolean isActive);
 
   @Query(value = "select * from post where id < :id and is_active = 1 and location = :location order by id desc limit :size",
